@@ -1,4 +1,6 @@
-﻿using MusicAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MusicAPI.Data;
+using MusicAPI.Dto;
 using MusicAPI.Interfaces;
 using MusicAPI.Models;
 using System.Collections.ObjectModel;
@@ -16,7 +18,7 @@ namespace MusicAPI.Repositories
 
         public ICollection<User> GetUsers()
         {
-            return _context.Users.OrderBy(p => p.Id).ToList();
+            return  _context.Users.OrderBy(p => p.Id).ToList();
         }
 
         public void CreateUser(string name, string password)
@@ -28,6 +30,26 @@ namespace MusicAPI.Repositories
             };
             _context.Users.Add(user);
             _context.SaveChanges();
+        }
+
+        public  User GetUser(int id)
+        {
+            return  _context.Users.Where(p => p.Id == id).FirstOrDefault();
+        }
+
+        public User GetUser(string name)
+        {
+            return  _context.Users.Where(p => p.UserName == name).FirstOrDefault();
+        }
+
+        public bool UserExists(int userId)
+        {
+            return _context.Users.Any(p => p.Id == userId);
+        }
+
+        public bool UserExists(string name)
+        {
+            return _context.Users.Any(p => p.UserName == name);
         }
 
     }
