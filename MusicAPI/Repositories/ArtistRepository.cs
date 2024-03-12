@@ -22,11 +22,7 @@ namespace MusicAPI.Repositories
         {
             return _context.Artists.Where(p => p.Id == id).FirstOrDefault();
         }
-
-        public Artist GetArtist(string name)
-        {
-            return _context.Artists.Where(p => p.Name == name).FirstOrDefault();
-        }
+       
 
         public ICollection<Song> GetSongsFromArtist(int artistId)
         {
@@ -35,7 +31,9 @@ namespace MusicAPI.Repositories
 
         public ICollection<Genre> GetGenreByArtist(int artistId)
         {
-            throw new NotImplementedException();
+            return _context.ArtistGenres
+                .Where(e => e.ArtistId == artistId)
+                .Select(c => c.Genre).ToList();
         }
 
         public bool ArtistExists(int id)
@@ -52,6 +50,11 @@ namespace MusicAPI.Repositories
         {
             _context.Artists.Add(artist);
             _context.SaveChanges();
+        }
+
+        public Artist GetArtisyBySong(int songId)
+        {
+            return _context.Songs.Where(e => e.Id == songId).Select(c => c.Artist).FirstOrDefault();
         }
     }
 }

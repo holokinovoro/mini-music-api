@@ -7,9 +7,10 @@ namespace MusicAPI.Interfaces
         ICollection<Artist> GetArtists();
 
         Artist GetArtist(int id);
-        Artist GetArtist(string name);
 
         ICollection<Song> GetSongsFromArtist(int artistId);
+
+        Artist GetArtisyBySong(int songId);
 
         ICollection<Genre> GetGenreByArtist(int artistId);
 

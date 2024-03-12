@@ -17,7 +17,7 @@ namespace MusicAPI.Data
 
         public DbSet<Song> Songs { get; set; }
         public DbSet<Genre> Genres { get; set; }
-        public IEnumerable<ArtistGenre> ArtistGenre { get; internal set; }
+        public DbSet<ArtistGenre> ArtistGenres { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
