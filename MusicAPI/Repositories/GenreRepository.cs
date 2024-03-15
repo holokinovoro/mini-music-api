@@ -1,0 +1,44 @@
+﻿using MusicAPI.Data;
+using MusicAPI.Interfaces;
+using MusicAPI.Models;
+
+namespace MusicAPI.Repositories
+{
+    public class GenreRepository : IGenreRepository
+    {
+        private readonly DataContext _context;
+
+        public GenreRepository(DataContext context)
+        {
+            _context = context;
+        }
+        public bool GenreExists(int genreId)
+        {
+            return _context.Genres.Any(p => p.Id == genreId);
+        }
+
+        public ICollection<Artist> GetArtistsByGenre(int genreId)
+        {
+            return _context.ArtistGenres
+                .Where(p => p.GenreId == genreId)
+                .Select(s => s.Artist)
+                .ToList();
+        }
+
+        public Genre GetGenre(int genreId)
+        {
+            return _context.Genres.Where(p => p.Id == genreId).FirstOrDefault();
+        }
+
+        public ICollection<Genre> GetGenres()
+        {
+            return _context.Genres.ToList();
+        }
+
+        public ICollection<Song> GetSongsByGenre(int genreId)
+        {
+            return _context.Songs.Where(e => e.Artist.ArtistGenres.Any(ag => ag.GenreId == genreId))
+                .ToList();
+        }
+    }
+}

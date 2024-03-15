@@ -1,0 +1,72 @@
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using MusicAPI.Dto;
+using MusicAPI.Interfaces;
+using MusicAPI.Models;
+
+namespace MusicAPI.Controllers
+{
+    [ApiController]
+    [Route("api/genres")]
+    public class GenreController : ControllerBase
+    {
+        private readonly IGenreRepository _genreRepository;
+        private readonly IMapper _mapper;
+
+        public GenreController(IGenreRepository genreRepository, IMapper mapper)
+        {
+            _genreRepository = genreRepository;
+            _mapper = mapper;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Genre>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetGenres()
+        {
+            var genres = _mapper.Map<List<GenreDto>>(_genreRepository.GetGenres());
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(genres);
+        }
+
+        [HttpGet("{genreId}")]
+        [ProducesResponseType(200, Type = typeof(Genre))]
+        [ProducesResponseType(400)]
+        public IActionResult GetGenre(int genreId)
+        {
+            if (!_genreRepository.GenreExists(genreId))
+                return NotFound();
+            var genre = _mapper.Map<GenreDto>(_genreRepository.GetGenre(genreId));
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(genre);
+        }
+
+        [HttpGet("{genreId}/artists")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Artist>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetArtistsByGenre(int genreId)
+        {
+            if (!_genreRepository.GenreExists(genreId))
+                return NotFound();
+            var artists = _mapper.Map<List<ArtistDto>>(_genreRepository.GetArtistsByGenre(genreId));
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(artists);
+        }
+
+        [HttpGet("{genreId}/songs")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Song>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetSongsByGenre(int genreId)
+        {
+            if (!_genreRepository.GenreExists(genreId))
+                return NotFound();
+            var songs = _mapper.Map<List<SongDto>>(_genreRepository.GetSongsByGenre(genreId));
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(songs);
+        }
+    }
+}
