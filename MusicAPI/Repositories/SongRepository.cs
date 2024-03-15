@@ -12,6 +12,13 @@ namespace MusicAPI.Repositories
         {
             _context = context;
         }
+
+        public bool CreateSong(Song song)
+        {
+            _context.Add(song);
+            return Save();
+        }
+
         public Artist GetArtistBySong(int songId)
         {
             return _context.Songs.Where(e => e.Id == songId).Select(p => p.Artist).FirstOrDefault();
@@ -32,6 +39,12 @@ namespace MusicAPI.Repositories
         public ICollection<Song> GetSongs()
         {
             return _context.Songs.ToList();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
 
         public bool SongExists(int songId)

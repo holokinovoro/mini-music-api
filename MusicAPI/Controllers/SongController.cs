@@ -11,11 +11,15 @@ namespace MusicAPI.Controllers
     public class SongController : ControllerBase
     {
         private readonly ISongRepository _songRepository;
+        private readonly IArtistRepository _artistRepository;
         private readonly IMapper _mapper;
 
-        public SongController(ISongRepository songRepository, IMapper mapper)
+        public SongController(ISongRepository songRepository,
+            IArtistRepository artistRepository,
+            IMapper mapper)
         {
             _songRepository = songRepository;
+            _artistRepository = artistRepository;
             _mapper = mapper;
         }
 
@@ -70,7 +74,27 @@ namespace MusicAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             return Ok(genres);
+        }
 
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateSong([FromQuery] int artistId, [FromBody] SongDto songCreate)
+        {
+            if (songCreate == null)
+                return BadRequest(ModelState);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var songMap = _mapper.Map<Song>(songCreate);
+            songMap.Artist = _artistRepository.GetArtist(artistId);
+            if (!_songRepository.CreateSong(songMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Successfully created");
         }
 
     }

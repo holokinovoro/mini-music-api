@@ -8,10 +8,10 @@ namespace MusicAPI.Helper
     {
         public MappingProfile()
         {
-            CreateMap<User, UserDto>();
-            CreateMap<Artist, ArtistDto>();
-            CreateMap<Song, SongDto>();
-            CreateMap<Genre, GenreDto>();
+            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<Artist, ArtistDto>().ReverseMap();
+            CreateMap<Song, SongDto>().ReverseMap();
+            CreateMap<Genre, GenreDto>().ReverseMap();
         }
     }
 }

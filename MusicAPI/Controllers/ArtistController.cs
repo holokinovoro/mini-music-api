@@ -86,6 +86,36 @@ namespace MusicAPI.Controllers
             return Ok(artist);
         }
 
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateArtist([FromQuery] int genreId, [FromBody] ArtistDto artistCreate)
+        {
+            if (artistCreate == null)
+                return BadRequest(ModelState);
+
+            var artists = _artistRepository.GetArtistTrimToUpper(artistCreate);
+
+            if (artists != null)
+            {
+                ModelState.AddModelError("", "Owner already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var artistMap = _mapper.Map<Artist>(artistCreate);
+
+            if(!_artistRepository.CreateArtist(genreId, artistMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
+
 
     }
 }

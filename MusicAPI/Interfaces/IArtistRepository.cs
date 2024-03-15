@@ -1,4 +1,5 @@
-﻿using MusicAPI.Models;
+﻿using MusicAPI.Dto;
+using MusicAPI.Models;
 
 namespace MusicAPI.Interfaces
 {
@@ -14,10 +15,14 @@ namespace MusicAPI.Interfaces
 
         ICollection<Genre> GetGenreByArtist(int artistId);
 
+        Artist GetArtistTrimToUpper(ArtistDto artistCreate);
+
         bool ArtistExists(int id);
         bool ArtistExists(string name);
 
-        void CreateArtist(Artist artist);
+        bool CreateArtist(int genreId, Artist artist);
+
+        bool Save();
 
 
     }

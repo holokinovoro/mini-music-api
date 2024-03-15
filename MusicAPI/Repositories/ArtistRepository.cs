@@ -1,4 +1,5 @@
 ﻿using MusicAPI.Data;
+using MusicAPI.Dto;
 using MusicAPI.Interfaces;
 using MusicAPI.Models;
 
@@ -55,6 +56,33 @@ namespace MusicAPI.Repositories
         public Artist GetArtisyBySong(int songId)
         {
             return _context.Songs.Where(e => e.Id == songId).Select(c => c.Artist).FirstOrDefault();
+        }
+
+        public bool CreateArtist(int genreId, Artist artist)
+        {
+            var artistGenreEntity = _context.Genres.Where(e => e.Id == genreId).FirstOrDefault();
+
+            var artistGenre = new ArtistGenre()
+            {
+                Artist = artist,
+                Genre = artistGenreEntity,
+            };
+
+            _context.Add(artistGenre);
+            _context.Add(artist);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+
+        public Artist GetArtistTrimToUpper(ArtistDto artistCreate)
+        {
+            return GetArtists().Where(c => c.Name.Trim().ToUpper() == artistCreate.Name.TrimEnd().ToUpper())
+                .FirstOrDefault();
         }
     }
 }

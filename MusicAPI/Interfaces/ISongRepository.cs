@@ -14,5 +14,9 @@ namespace MusicAPI.Interfaces
         ICollection<Genre> GetGenreOfSong(int songId);
 
         bool SongExists(int songId);
+
+        bool CreateSong(Song song);
+
+        bool Save();
     }
 }
