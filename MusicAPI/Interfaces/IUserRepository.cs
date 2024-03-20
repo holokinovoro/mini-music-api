@@ -1,4 +1,5 @@
-﻿using MusicAPI.Models;
+﻿using MusicAPI.Dto;
+using MusicAPI.Models;
 
 namespace MusicAPI.Interfaces
 {
@@ -9,10 +10,15 @@ namespace MusicAPI.Interfaces
         User GetUser(int id);
         User GetUser(string username);
 
+        User GetUserTrimToUpper(UserDto userCreate);
+
         bool UserExists(int userId);
         bool UserExists(string name);
 
 
-        void CreateUser(string name, string password);
+        bool CreateUser(User user);
+
+        bool Save();
+
     }
 }

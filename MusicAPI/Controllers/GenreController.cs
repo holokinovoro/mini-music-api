@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MusicAPI.Dto;
 using MusicAPI.Interfaces;
 using MusicAPI.Models;
+using MusicAPI.Repositories;
 
 namespace MusicAPI.Controllers
 {
@@ -68,5 +69,36 @@ namespace MusicAPI.Controllers
                 return BadRequest(ModelState);
             return Ok(songs);
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateGenre([FromQuery] int artistId, [FromBody] GenreDto genreCreate)
+        {
+            if (genreCreate == null)
+                return BadRequest(ModelState);
+
+            var genres = _genreRepository.GetGenreTrimToUpper(genreCreate);
+
+            if (genres != null)
+            {
+                ModelState.AddModelError("", "Owner already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var genreMap = _mapper.Map<Genre>(genreCreate);
+
+            if (!_genreRepository.CreateGenre(artistId, genreMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
+    
     }
 }

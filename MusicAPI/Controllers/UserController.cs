@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MusicAPI.Dto;
 using MusicAPI.Interfaces;
 using MusicAPI.Models;
+using MusicAPI.Repositories;
 
 namespace MusicAPI.Controllers
 {
@@ -65,10 +66,34 @@ namespace MusicAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser(string name, string password)
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateUser([FromBody] UserDto userCreate, [FromBody]string password)
         {
-            _userRepository.CreateUser(name, password);
-            return Ok();
+            if (userCreate == null)
+                return BadRequest(ModelState);
+
+            var users = _userRepository.GetUserTrimToUpper(userCreate);
+
+            if (users != null)
+            {
+                ModelState.AddModelError("", "Owner already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var userMap = _mapper.Map<User>(userCreate);
+            userMap.Password = password;
+
+            if (!_userRepository.CreateUser(userMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Successfully created");
         }
+
     }
 }

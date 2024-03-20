@@ -21,16 +21,7 @@ namespace MusicAPI.Repositories
             return  _context.Users.OrderBy(p => p.Id).ToList();
         }
 
-        public void CreateUser(string name, string password)
-        {
-            var user = new User
-            {
-                UserName = name,
-                Password = password
-            };
-            _context.Users.Add(user);
-            _context.SaveChanges();
-        }
+        
 
         public  User GetUser(int id)
         {
@@ -52,5 +43,22 @@ namespace MusicAPI.Repositories
             return _context.Users.Any(p => p.UserName == name);
         }
 
+        public User GetUserTrimToUpper(UserDto userCreate)
+        {
+            return GetUsers().Where(e => e.UserName.Trim().ToUpper() == userCreate.UserName.TrimEnd().ToUpper())
+                .FirstOrDefault();
+        }
+
+        public bool CreateUser(User user)
+        {
+            _context.Add(user);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }
