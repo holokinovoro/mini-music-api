@@ -98,5 +98,11 @@ namespace MusicAPI.Repositories
             _context.Update(artist);
             return Save();
         }
+
+        public bool DeleteArtist(Artist artist)
+        {
+            _context.Remove(artist);
+            return Save();
+        }
     }
 }

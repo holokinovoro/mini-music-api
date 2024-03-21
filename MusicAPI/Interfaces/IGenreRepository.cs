@@ -20,6 +20,8 @@ namespace MusicAPI.Interfaces
 
         bool UpdateGenre(int artistId, Genre genre);
 
+        bool DeleteGenre(Genre genre);
+
         bool Save();
 
         bool GenreExists(int genreId);

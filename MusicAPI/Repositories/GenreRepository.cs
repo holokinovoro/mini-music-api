@@ -30,6 +30,12 @@ namespace MusicAPI.Repositories
             return Save();
         }
 
+        public bool DeleteGenre(Genre genre)
+        {
+            _context.Remove(genre);
+            return Save();
+        }
+
         public bool GenreExists(int genreId)
         {
             return _context.Genres.Any(p => p.Id == genreId);

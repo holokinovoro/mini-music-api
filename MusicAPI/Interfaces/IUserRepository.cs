@@ -19,6 +19,8 @@ namespace MusicAPI.Interfaces
         bool CreateUser(User user);
         bool UpdateUser(User user);
 
+        bool DeleteUser(User userId);
+
         bool Save();
 
     }

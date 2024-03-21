@@ -3,7 +3,7 @@ using MusicAPI.Models;
 
 namespace MusicAPI.Interfaces
 {
-    public interface ISongRepository
+    public interface ISongRepository 
     {
         ICollection<Song> GetSongs();
 
@@ -18,6 +18,8 @@ namespace MusicAPI.Interfaces
         bool CreateSong(Song song);
 
         bool UpdateSong(Song song);
+
+        bool DeleteSong(Song song);
 
         bool Save();
     }

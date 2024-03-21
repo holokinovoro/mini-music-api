@@ -125,5 +125,30 @@ namespace MusicAPI.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{songId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteSong(int songId)
+        {
+            if (!_songRepository.SongExists(songId))
+            {
+                return NotFound();
+            }
+
+            var songToDelete = _songRepository.GetSong(songId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+
+            if (!_songRepository.DeleteSong(songToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting song");
+            }
+
+            return NoContent();
+        }
     }
 }

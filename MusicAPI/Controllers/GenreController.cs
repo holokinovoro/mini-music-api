@@ -131,5 +131,27 @@ namespace MusicAPI.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{genreId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteGenre(int genreId)
+        {
+            if (!_genreRepository.GenreExists(genreId))
+                return NotFound();
+
+            var genreToDelete = _genreRepository.GetGenre(genreId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_genreRepository.DeleteGenre(genreToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting genre");
+            }
+
+            return NoContent();
+        }
+
     }
 }

@@ -147,6 +147,28 @@ namespace MusicAPI.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{artistId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteArtist(int artistId)
+        {
+            if (!_artistRepository.ArtistExists(artistId))
+                return NotFound();
+
+            var artistToDelete = _artistRepository.GetArtist(artistId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_artistRepository.DeleteArtist(artistToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting artist");
+            }
+
+            return NoContent();
+        }
+
 
     }
 }

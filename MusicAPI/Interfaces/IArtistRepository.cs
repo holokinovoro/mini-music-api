@@ -24,6 +24,8 @@ namespace MusicAPI.Interfaces
 
         bool UpdateArtist(int genreId, Artist artist);
 
+        bool DeleteArtist(Artist artist);
+
         bool Save();
 
 

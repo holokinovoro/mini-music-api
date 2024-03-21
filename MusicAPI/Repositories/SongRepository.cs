@@ -19,6 +19,12 @@ namespace MusicAPI.Repositories
             return Save();
         }
 
+        public bool DeleteSong(Song song)
+        {
+            _context.Remove(song);
+            return Save();
+        }
+
         public Artist GetArtistBySong(int songId)
         {
             return _context.Songs.Where(e => e.Id == songId).Select(p => p.Artist).FirstOrDefault();
