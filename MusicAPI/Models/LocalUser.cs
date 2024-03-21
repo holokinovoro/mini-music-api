@@ -1,6 +1,6 @@
 ﻿namespace MusicAPI.Models
 {
-    public class User
+    public class LocalUser
     {
         public int Id { get; set; }
 

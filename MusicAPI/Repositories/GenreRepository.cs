@@ -1,7 +1,7 @@
 ﻿using MusicAPI.Data;
-using MusicAPI.Dto;
-using MusicAPI.Interfaces;
+using MusicAPI.IRepository;
 using MusicAPI.Models;
+using MusicAPI.Dto;
 
 namespace MusicAPI.Repositories
 {

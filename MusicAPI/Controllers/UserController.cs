@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using MusicAPI.Dto;
-using MusicAPI.Interfaces;
+using MusicAPI.IRepository;
 using MusicAPI.Models;
+using MusicAPI.Dto;
 using MusicAPI.Repositories;
 
 namespace MusicAPI.Controllers
@@ -21,7 +21,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<LocalUser>))]
         public IActionResult GetUsers()
         {
             var users = _mapper.Map<List<UserDto>>(_userRepository.GetUsers());
@@ -32,7 +32,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpGet("{userId}")]
-        [ProducesResponseType(200, Type = typeof(User))]
+        [ProducesResponseType(200, Type = typeof(LocalUser))]
         [ProducesResponseType(400)]
         public IActionResult GetUser(int userId)
         {
@@ -50,7 +50,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpGet("{userName}/name")]
-        [ProducesResponseType(200, Type = typeof(User))]
+        [ProducesResponseType(200, Type = typeof(LocalUser))]
         [ProducesResponseType(400)]
         public IActionResult GetUserByName(string userName)
         {
@@ -84,7 +84,7 @@ namespace MusicAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var userMap = _mapper.Map<User>(userCreate);
+            var userMap = _mapper.Map<LocalUser>(userCreate);
             userMap.Password = password;
 
             if (!_userRepository.CreateUser(userMap))
@@ -114,7 +114,7 @@ namespace MusicAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var userMap = _mapper.Map<User>(updatedUser);
+            var userMap = _mapper.Map<LocalUser>(updatedUser);
 
             if (!_userRepository.UpdateUser(userMap))
             {

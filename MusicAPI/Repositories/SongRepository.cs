@@ -1,6 +1,6 @@
 ﻿using MusicAPI.Data;
-using MusicAPI.Interfaces;
 using MusicAPI.Models;
+using MusicAPI.IRepository;
 
 namespace MusicAPI.Repositories
 {

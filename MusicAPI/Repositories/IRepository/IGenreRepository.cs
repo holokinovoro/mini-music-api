@@ -1,7 +1,7 @@
-﻿using MusicAPI.Dto;
-using MusicAPI.Models;
+﻿using MusicAPI.Models;
+using MusicAPI.Dto;
 
-namespace MusicAPI.Interfaces
+namespace MusicAPI.IRepository
 {
     public interface IGenreRepository
     {

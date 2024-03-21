@@ -1,7 +1,7 @@
 ﻿using MusicAPI.Dto;
 using MusicAPI.Models;
 
-namespace MusicAPI.Interfaces
+namespace MusicAPI.IRepository
 {
     public interface IArtistRepository
     {

@@ -1,6 +1,6 @@
 ﻿using MusicAPI.Data;
 using MusicAPI.Dto;
-using MusicAPI.Interfaces;
+using MusicAPI.IRepository;
 using MusicAPI.Models;
 
 namespace MusicAPI.Repositories
@@ -79,11 +79,6 @@ namespace MusicAPI.Repositories
             return saved > 0 ? true : false;
         }
 
-        public Artist GetArtistTrimToUpper(ArtistDto artistCreate)
-        {
-            return GetArtists().Where(c => c.Name.Trim().ToUpper() == artistCreate.Name.TrimEnd().ToUpper())
-                .FirstOrDefault();
-        }
 
         public bool UpdateArtist(int genreId, Artist artist)
         {
@@ -103,6 +98,12 @@ namespace MusicAPI.Repositories
         {
             _context.Remove(artist);
             return Save();
+        }
+
+        public Artist GetArtistTrimToUpper(ArtistDto artistCreate)
+        {
+            return GetArtists().Where(c => c.Name.Trim().ToUpper() == artistCreate.Name.TrimEnd().ToUpper())
+                .FirstOrDefault();
         }
     }
 }

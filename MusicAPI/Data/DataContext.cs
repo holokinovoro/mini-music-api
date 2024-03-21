@@ -11,7 +11,7 @@ namespace MusicAPI.Data
 
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<LocalUser> Users { get; set; }
 
         public DbSet<Artist> Artists { get; set; }
 

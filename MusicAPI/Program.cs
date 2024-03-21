@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Any;
 using MusicAPI.Data;
-using MusicAPI.Interfaces;
 using MusicAPI.Repositories;
 using AutoMapper;
+using MusicAPI.Repositories.IRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
