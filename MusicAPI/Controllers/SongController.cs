@@ -97,5 +97,33 @@ namespace MusicAPI.Controllers
             return Ok("Successfully created");
         }
 
+        [HttpPut("{songId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateSong(int songId, [FromBody] SongDto updatedSong)
+        {
+            if (updatedSong == null)
+                return BadRequest(ModelState);
+
+            if (songId != updatedSong.Id)
+                return BadRequest(ModelState);
+
+            if (!_songRepository.SongExists(songId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var songMap = _mapper.Map<Song>(updatedSong);
+
+            if (!_songRepository.UpdateSong(songMap))
+            {
+                ModelState.AddModelError("", "Somethin wents wrong updating song");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

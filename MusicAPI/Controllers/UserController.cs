@@ -68,7 +68,7 @@ namespace MusicAPI.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateUser([FromBody] UserDto userCreate, [FromBody]string password)
+        public IActionResult CreateUser([FromBody] UserDto userCreate, string password)
         {
             if (userCreate == null)
                 return BadRequest(ModelState);
@@ -95,5 +95,34 @@ namespace MusicAPI.Controllers
             return Ok("Successfully created");
         }
 
+
+        [HttpPut("{userId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateSong(int userId, [FromBody] UserDto updatedUser)
+        {
+            if (updatedUser == null)
+                return BadRequest(ModelState);
+
+            if (userId != updatedUser.Id)
+                return BadRequest(ModelState);
+
+            if (!_userRepository.UserExists(userId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var userMap = _mapper.Map<User>(updatedUser);
+
+            if (!_userRepository.UpdateUser(userMap))
+            {
+                ModelState.AddModelError("", "Somethin wents wrong updating user");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

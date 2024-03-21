@@ -99,6 +99,37 @@ namespace MusicAPI.Controllers
 
             return Ok("Successfully created");
         }
-    
+
+        [HttpPut("{genreId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateGenre(int genreId,
+            [FromQuery] int artistId,
+            [FromBody] GenreDto updatedGenre)
+        {
+            if (updatedGenre == null)
+                return BadRequest(ModelState);
+
+            if (genreId != updatedGenre.Id)
+                return BadRequest(ModelState);
+
+            if (!_genreRepository.GenreExists(artistId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var genreMap = _mapper.Map<Genre>(updatedGenre);
+
+            if (!_genreRepository.UpdateGenre(artistId, genreMap))
+            {
+                ModelState.AddModelError("", "Something went wrong updating genre");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
     }
 }

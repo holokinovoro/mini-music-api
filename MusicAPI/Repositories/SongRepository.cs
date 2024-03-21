@@ -51,5 +51,11 @@ namespace MusicAPI.Repositories
         {
             return _context.Songs.Any(e => e.Id == songId);
         }
+
+        public bool UpdateSong(Song song)
+        {
+            _context.Update(song);
+            return Save();
+        }
     }
 }

@@ -17,6 +17,8 @@ namespace MusicAPI.Interfaces
 
         bool CreateSong(Song song);
 
+        bool UpdateSong(Song song);
+
         bool Save();
     }
 }

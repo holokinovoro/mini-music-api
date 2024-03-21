@@ -84,5 +84,19 @@ namespace MusicAPI.Repositories
             return GetArtists().Where(c => c.Name.Trim().ToUpper() == artistCreate.Name.TrimEnd().ToUpper())
                 .FirstOrDefault();
         }
+
+        public bool UpdateArtist(int genreId, Artist artist)
+        {
+            var artistGenreEntity = _context.Genres.Where(e => e.Id == genreId).FirstOrDefault();
+
+            var artistGenre = new ArtistGenre()
+            {
+                Artist = artist,
+                Genre = artistGenreEntity,
+            };
+            _context.Add(artistGenre);
+            _context.Update(artist);
+            return Save();
+        }
     }
 }

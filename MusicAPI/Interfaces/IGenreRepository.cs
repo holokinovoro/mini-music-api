@@ -18,6 +18,8 @@ namespace MusicAPI.Interfaces
 
         bool CreateGenre(int artistId, Genre genre);
 
+        bool UpdateGenre(int artistId, Genre genre);
+
         bool Save();
 
         bool GenreExists(int genreId);

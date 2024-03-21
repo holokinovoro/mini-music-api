@@ -22,6 +22,8 @@ namespace MusicAPI.Interfaces
 
         bool CreateArtist(int genreId, Artist artist);
 
+        bool UpdateArtist(int genreId, Artist artist);
+
         bool Save();
 
 

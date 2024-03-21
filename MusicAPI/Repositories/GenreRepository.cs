@@ -71,5 +71,11 @@ namespace MusicAPI.Repositories
 
             return saved > 0 ? true : false;
         }
+
+        public bool UpdateGenre(int artistId, Genre genre)
+        {
+            _context.Update(genre);
+            return Save();
+        }
     }
 }
