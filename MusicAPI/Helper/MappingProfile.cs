@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using MusicAPI.Models;
 using MusicAPI.Dto;
+using MusicAPI.Models;
 
 namespace MusicAPI.Helper
 {
@@ -8,7 +8,7 @@ namespace MusicAPI.Helper
     {
         public MappingProfile()
         {
-            CreateMap<LocalUser, UserDto>().ReverseMap();
+            CreateMap<User, UserDto>().ReverseMap();
             CreateMap<Artist, ArtistDto>().ReverseMap();
             CreateMap<Song, SongDto>().ReverseMap();
             CreateMap<Genre, GenreDto>().ReverseMap();

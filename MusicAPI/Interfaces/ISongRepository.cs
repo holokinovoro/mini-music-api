@@ -1,7 +1,7 @@
 ﻿using Microsoft.Identity.Client;
 using MusicAPI.Models;
 
-namespace MusicAPI.IRepository
+namespace MusicAPI.Interfaces
 {
     public interface ISongRepository 
     {

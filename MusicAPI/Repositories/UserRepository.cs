@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MusicAPI.Data;
-using MusicAPI.IRepository;
-using MusicAPI.Models;
 using MusicAPI.Dto;
+using MusicAPI.Interfaces;
+using MusicAPI.Models;
 using System.Collections.ObjectModel;
 
 namespace MusicAPI.Repositories
@@ -16,19 +16,19 @@ namespace MusicAPI.Repositories
             _context = context;
         }
 
-        public ICollection<LocalUser> GetUsers()
+        public ICollection<User> GetUsers()
         {
             return  _context.Users.OrderBy(p => p.Id).ToList();
         }
 
         
 
-        public  LocalUser GetUser(int id)
+        public  User GetUser(int id)
         {
             return  _context.Users.Where(p => p.Id == id).FirstOrDefault();
         }
 
-        public LocalUser GetUser(string name)
+        public User GetUser(string name)
         {
             return  _context.Users.Where(p => p.UserName == name).FirstOrDefault();
         }
@@ -43,13 +43,13 @@ namespace MusicAPI.Repositories
             return _context.Users.Any(p => p.UserName == name);
         }
 
-        public LocalUser GetUserTrimToUpper(UserDto userCreate)
+        public User GetUserTrimToUpper(UserDto userCreate)
         {
             return GetUsers().Where(e => e.UserName.Trim().ToUpper() == userCreate.UserName.TrimEnd().ToUpper())
                 .FirstOrDefault();
         }
 
-        public bool CreateUser(LocalUser user)
+        public bool CreateUser(User user)
         {
             _context.Add(user);
             return Save();
@@ -61,13 +61,13 @@ namespace MusicAPI.Repositories
             return saved > 0 ? true : false;
         }
 
-        public bool UpdateUser(LocalUser user)
+        public bool UpdateUser(User user)
         {
             _context.Update(user);
             return Save();
         }
 
-        public bool DeleteUser(LocalUser user)
+        public bool DeleteUser(User user)
         {
             _context.Remove(user);
             return Save();

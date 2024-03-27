@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using MusicAPI.IRepository;
-using MusicAPI.Models;
 using MusicAPI.Dto;
+using MusicAPI.Interfaces;
+using MusicAPI.Models;
 
 namespace MusicAPI.Controllers
 {
