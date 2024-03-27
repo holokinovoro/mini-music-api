@@ -1,4 +1,5 @@
-﻿using MusicAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MusicAPI.Data;
 using MusicAPI.Dto;
 using MusicAPI.Interfaces;
 using MusicAPI.Models;
@@ -14,14 +15,15 @@ namespace MusicAPI.Repositories
             _context = context;
         }
 
-        public ICollection<Artist> GetArtists()
+        public async Task<ICollection<Artist>> GetArtists()
         {
-            return _context.Artists.OrderBy(p => p.Id).ToList();
+            return await _context.Artists.OrderBy(p => p.Id).ToListAsync();
         }
 
-        public Artist GetArtist(int id)
+        public async Task<Artist?> GetArtist(int id, CancellationToken cancellationToken)
         {
-            return _context.Artists.Where(p => p.Id == id).FirstOrDefault();
+            var artist = await _context.Artists.Where(p => p.Id == id).FirstOrDefaultAsync<Artist>(cancellationToken);
+            return artist;
         }
        
 
@@ -79,11 +81,11 @@ namespace MusicAPI.Repositories
             return saved > 0 ? true : false;
         }
 
-        public Artist GetArtistTrimToUpper(ArtistDto artistCreate)
+        /*public Artist GetArtistTrimToUpper(ArtistDto artistCreate)
         {
             return GetArtists().Where(c => c.Name.Trim().ToUpper() == artistCreate.Name.TrimEnd().ToUpper())
                 .FirstOrDefault();
-        }
+        }*/
 
         public bool UpdateArtist(int genreId, Artist artist)
         {

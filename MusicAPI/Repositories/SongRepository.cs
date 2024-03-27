@@ -13,10 +13,10 @@ namespace MusicAPI.Repositories
             _context = context;
         }
 
-        public bool CreateSong(Song song)
+        public async Task<int> CreateSong(Song song, CancellationToken cancellationToken)
         {
-            _context.Add(song);
-            return Save();
+            await _context.Songs.AddAsync(song, cancellationToken);
+            return await _context.SaveChangesAsync(cancellationToken);
         }
 
         public bool DeleteSong(Song song)

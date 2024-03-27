@@ -15,7 +15,7 @@ namespace MusicAPI.Interfaces
 
         bool SongExists(int songId);
 
-        bool CreateSong(Song song);
+        Task<int> CreateSong(Song song, CancellationToken cancellationToken);
 
         bool UpdateSong(Song song);
 

@@ -19,7 +19,7 @@ namespace MusicAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{id}/artist")]
+      /*  [HttpGet("{id}/artist")]
         [ProducesResponseType(200, Type = typeof(Artist))]
         [ProducesResponseType(400)]
         public IActionResult GetArtist(int id)
@@ -32,7 +32,7 @@ namespace MusicAPI.Controllers
                 return BadRequest(ModelState);
 
             return Ok(artist);
-        }
+        }*/
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Artist>))]
@@ -86,7 +86,7 @@ namespace MusicAPI.Controllers
             return Ok(artist);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult CreateArtist([FromQuery] int genreId, [FromBody] ArtistDto artistCreate)
@@ -114,7 +114,7 @@ namespace MusicAPI.Controllers
             }
 
             return Ok("Successfully created");
-        }
+        }*/
 
         [HttpPut("{artistId}")]
         [ProducesResponseType(400)]
@@ -147,7 +147,7 @@ namespace MusicAPI.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{artistId}")]
+        /*[HttpDelete("{artistId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -167,7 +167,7 @@ namespace MusicAPI.Controllers
             }
 
             return NoContent();
-        }
+        }*/
 
 
     }

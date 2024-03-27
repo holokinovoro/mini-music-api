@@ -5,9 +5,9 @@ namespace MusicAPI.Interfaces
 {
     public interface IArtistRepository
     {
-        ICollection<Artist> GetArtists();
+        Task<ICollection<Artist>> GetArtists();
 
-        Artist GetArtist(int id);
+        Task<Artist?> GetArtist(int id, CancellationToken cancellationToken);
 
         ICollection<Song> GetSongsFromArtist(int artistId);
 
@@ -15,7 +15,7 @@ namespace MusicAPI.Interfaces
 
         ICollection<Genre> GetGenreByArtist(int artistId);
 
-        Artist GetArtistTrimToUpper(ArtistDto artistCreate);
+       /* Artist GetArtistTrimToUpper(ArtistDto artistCreate);*/
 
         bool ArtistExists(int id);
         bool ArtistExists(string name);

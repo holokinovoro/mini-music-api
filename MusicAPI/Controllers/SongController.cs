@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MusicAPI.Commands.CreateSong;
 using MusicAPI.Dto;
 using MusicAPI.Interfaces;
 using MusicAPI.Models;
@@ -13,14 +15,17 @@ namespace MusicAPI.Controllers
         private readonly ISongRepository _songRepository;
         private readonly IArtistRepository _artistRepository;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
         public SongController(ISongRepository songRepository,
             IArtistRepository artistRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IMediator mediator)
         {
             _songRepository = songRepository;
             _artistRepository = artistRepository;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -76,7 +81,7 @@ namespace MusicAPI.Controllers
             return Ok(genres);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public IActionResult CreateSong([FromQuery] int artistId, [FromBody] SongDto songCreate)
@@ -95,6 +100,19 @@ namespace MusicAPI.Controllers
                 return StatusCode(500, ModelState);
             }
             return Ok("Successfully created");
+        }*/
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> CreateSong(CreateSongCommand command)
+        {
+            var response = await _mediator.Send(command);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return NoContent();
         }
 
         [HttpPut("{songId}")]
