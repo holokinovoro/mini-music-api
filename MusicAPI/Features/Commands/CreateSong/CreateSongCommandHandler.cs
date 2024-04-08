@@ -2,7 +2,7 @@
 using MusicAPI.Interfaces;
 using MusicAPI.Models;
 
-namespace MusicAPI.Commands.CreateSong
+namespace MusicAPI.Features.Commands.CreateSong
 {
     public class CreateSongCommandHandler : IRequestHandler<CreateSongCommand, int>
     {

@@ -4,7 +4,7 @@ using MusicAPI.Data;
 using MusicAPI.Interfaces;
 using MusicAPI.Repositories;
 using AutoMapper;
-using MusicAPI.Commands.CreateSong;
+using MusicAPI.Features.Commands.CreateSong;
 using System.Reflection;
 using Serilog;
 

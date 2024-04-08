@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MusicAPI.Commands.CreateSong;
 using MusicAPI.Dto;
+using MusicAPI.Features.Commands.CreateSong;
+using MusicAPI.Features.Queries.GetSong;
 using MusicAPI.Interfaces;
 using MusicAPI.Models;
 
@@ -31,12 +32,13 @@ namespace MusicAPI.Controllers
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Song>))]
         [ProducesResponseType(400)]
-        public IActionResult GetSongs()
+        public async Task<IActionResult> GetAllSongs()
         {
-            var songs = _mapper.Map<List<SongDto>>(_songRepository.GetSongs());
+            var request = new GetAllSongsQuery();
+            var response = await _mediator.Send(request);
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return Ok(songs);
+            return Ok(response);
         }
 
         [HttpGet("{songId}")]

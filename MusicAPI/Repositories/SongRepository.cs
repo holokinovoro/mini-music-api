@@ -1,4 +1,5 @@
-﻿using MusicAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MusicAPI.Data;
 using MusicAPI.Interfaces;
 using MusicAPI.Models;
 
@@ -42,9 +43,10 @@ namespace MusicAPI.Repositories
             return _context.Songs.Where(e => e.Id == songId).FirstOrDefault();
         }
 
-        public ICollection<Song> GetSongs()
+        public async Task<ICollection<Song>> GetSongs(CancellationToken cancellationToken)
         {
-            return _context.Songs.ToList();
+            var songs = _context.Songs.ToListAsync(cancellationToken);
+            return await songs;
         }
 
         public bool Save()

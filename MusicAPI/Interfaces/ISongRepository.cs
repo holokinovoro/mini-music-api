@@ -5,7 +5,7 @@ namespace MusicAPI.Interfaces
 {
     public interface ISongRepository 
     {
-        ICollection<Song> GetSongs();
+        Task<ICollection<Song>> GetSongs(CancellationToken cancellationToken);
 
         Song GetSong(int songId);
 
