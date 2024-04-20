@@ -6,6 +6,7 @@ using MusicAPI.Features.Commands.CreateSong;
 using MusicAPI.Features.Queries.GetSong;
 using MusicAPI.Interfaces;
 using MusicAPI.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace MusicAPI.Controllers
 {
@@ -42,17 +43,20 @@ namespace MusicAPI.Controllers
         }
 
         [HttpGet("{songId}")]
-        [ProducesResponseType(200, Type = typeof(Song))]
+        [ProducesResponseType(200, Type = typeof(SongDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetSong(int songId)
+        public async Task<IActionResult> GetSong(int songId)
         {
-            if (!_songRepository.SongExists(songId))
-                return NotFound();
+            var request = new GetSongByIdQuery
+            {
+                SongId = songId
+            };
 
-            var song = _mapper.Map<SongDto>(_songRepository.GetSong(songId));
+            var response = await _mediator.Send(request);
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return Ok(song);
+            return Ok(response);
         }
 
         [HttpGet("{songId}/artist")]
@@ -83,26 +87,6 @@ namespace MusicAPI.Controllers
             return Ok(genres);
         }
 
-        /*[HttpPost]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult CreateSong([FromQuery] int artistId, [FromBody] SongDto songCreate)
-        {
-            if (songCreate == null)
-                return BadRequest(ModelState);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var songMap = _mapper.Map<Song>(songCreate);
-            songMap.Artist = _artistRepository.GetArtist(artistId);
-            if (!_songRepository.CreateSong(songMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
-            return Ok("Successfully created");
-        }*/
 
         [HttpPost]
         [ProducesResponseType(204)]
@@ -146,7 +130,7 @@ namespace MusicAPI.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{songId}")]
+      /*  [HttpDelete("{songId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -169,6 +153,6 @@ namespace MusicAPI.Controllers
             }
 
             return NoContent();
-        }
+        }*/
     }
 }

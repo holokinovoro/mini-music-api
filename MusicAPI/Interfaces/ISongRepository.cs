@@ -7,7 +7,7 @@ namespace MusicAPI.Interfaces
     {
         Task<ICollection<Song>> GetSongs(CancellationToken cancellationToken);
 
-        Song GetSong(int songId);
+        Task<Song> GetSong(int songId, CancellationToken cancellationToken);
 
         Artist GetArtistBySong(int songId);
 

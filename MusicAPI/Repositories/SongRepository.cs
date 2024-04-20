@@ -38,9 +38,10 @@ namespace MusicAPI.Repositories
                 .Distinct().ToList();
         }
 
-        public Song GetSong(int songId)
+        public async Task<Song> GetSong(int songId, CancellationToken cancellationToken)
         {
-            return _context.Songs.Where(e => e.Id == songId).FirstOrDefault();
+            var song = await _context.Songs.Where(e => e.Id == songId).FirstOrDefaultAsync(cancellationToken);
+            return song;
         }
 
         public async Task<ICollection<Song>> GetSongs(CancellationToken cancellationToken)

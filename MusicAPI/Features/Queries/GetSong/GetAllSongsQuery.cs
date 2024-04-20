@@ -11,12 +11,10 @@ namespace MusicAPI.Features.Queries.GetSong
     public class GetAllSongsQueryHandler : IRequestHandler<GetAllSongsQuery, List<SongDto>>
     {
         private readonly ISongRepository _songRepository;
-        private readonly IMapper _mapper;
 
-        public GetAllSongsQueryHandler(ISongRepository songRepository, IMapper mapper)
+        public GetAllSongsQueryHandler(ISongRepository songRepository)
         {
             _songRepository = songRepository;
-            _mapper = mapper;
         }
 
         public async Task<List<SongDto>> Handle(GetAllSongsQuery request, CancellationToken cancellationToken)
