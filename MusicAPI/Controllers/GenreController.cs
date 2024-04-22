@@ -1,23 +1,19 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using MusicAPI.Dto;
-using MusicAPI.Interfaces;
-using MusicAPI.Models;
-using MusicAPI.Repositories;
+using Application.Dto;
+using Domain.Models;
 
 namespace MusicAPI.Controllers
 {
-    [ApiController]
+    /*[ApiController]
     [Route("api/genres")]
     public class GenreController : ControllerBase
     {
-        private readonly IGenreRepository _genreRepository;
         private readonly IMapper _mapper;
 
-        public GenreController(IGenreRepository genreRepository, IMapper mapper)
+        public GenreController()
         {
-            _genreRepository = genreRepository;
-            _mapper = mapper;
+            
         }
 
         [HttpGet]
@@ -153,5 +149,5 @@ namespace MusicAPI.Controllers
             return NoContent();
         }
 
-    }
+    }*/
 }

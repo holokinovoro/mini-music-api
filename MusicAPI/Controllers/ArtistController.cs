@@ -1,16 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using MusicAPI.Dto;
-using MusicAPI.Interfaces;
-using MusicAPI.Models;
+using Application.Dto;
+using Domain.Models;
 
 namespace MusicAPI.Controllers
 {
-    [ApiController]
+   /* [ApiController]
     [Route("api/artists")]
     public class ArtistController : ControllerBase
     {
-        private readonly IArtistRepository _artistRepository;
         private readonly IMapper _mapper;
 
         public ArtistController(IArtistRepository artistRepository, IMapper mapper)
@@ -18,7 +16,7 @@ namespace MusicAPI.Controllers
             _artistRepository = artistRepository;
             _mapper = mapper;
         }
-
+*/
       /*  [HttpGet("{id}/artist")]
         [ProducesResponseType(200, Type = typeof(Artist))]
         [ProducesResponseType(400)]
@@ -34,7 +32,7 @@ namespace MusicAPI.Controllers
             return Ok(artist);
         }*/
 
-        [HttpGet]
+        /*[HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Artist>))]
         [ProducesResponseType(400)]
         public IActionResult GetArtists()
@@ -84,7 +82,7 @@ namespace MusicAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             return Ok(artist);
-        }
+        }*/
 
         /*[HttpPost]
         [ProducesResponseType(204)]
@@ -116,7 +114,7 @@ namespace MusicAPI.Controllers
             return Ok("Successfully created");
         }*/
 
-        [HttpPut("{artistId}")]
+       /* [HttpPut("{artistId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -145,7 +143,7 @@ namespace MusicAPI.Controllers
             }
 
             return NoContent();
-        }
+        }*/
 
         /*[HttpDelete("{artistId}")]
         [ProducesResponseType(400)]
@@ -168,7 +166,7 @@ namespace MusicAPI.Controllers
 
             return NoContent();
         }*/
+/*
 
-
-    }
+    }*/
 }

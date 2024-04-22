@@ -1,12 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Any;
-using MusicAPI.Data;
-using MusicAPI.Interfaces;
-using MusicAPI.Repositories;
-using AutoMapper;
-using MusicAPI.Features.Commands.CreateSong;
+using Infrastructure.Data;
+using Application.IRepository;
+using Infrastructure.Repositories;
 using System.Reflection;
 using Serilog;
+using Infrastructure;
+using Application.Features.Queries.Song.GetSong;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +27,7 @@ builder.Services.AddScoped<ISongRepository, SongRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 
 builder.Services.AddMediatR(x =>
-    x.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
+    x.RegisterServicesFromAssemblies(typeof(GetAllSongsQueryHandler).Assembly, typeof(GetAllSongsQuery).Assembly));
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>

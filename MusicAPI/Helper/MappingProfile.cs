@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using MusicAPI.Dto;
-using MusicAPI.Models;
+using Application.Dto;
+using Domain.Models;
 
 namespace MusicAPI.Helper
 {

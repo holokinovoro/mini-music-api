@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MusicAPI.Dto;
-using MusicAPI.Features.Commands.CreateSong;
-using MusicAPI.Features.Queries.GetSong;
-using MusicAPI.Interfaces;
-using MusicAPI.Models;
+using Application.Dto;
+using Application.Features.Commands.SongCommands.CreateSong;
+using Domain.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Application.Features.Queries.Song.GetSong;
 
 namespace MusicAPI.Controllers
 {
@@ -14,18 +13,13 @@ namespace MusicAPI.Controllers
     [Route("api/songs")]
     public class SongController : ControllerBase
     {
-        private readonly ISongRepository _songRepository;
-        private readonly IArtistRepository _artistRepository;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public SongController(ISongRepository songRepository,
-            IArtistRepository artistRepository,
+        public SongController(
             IMapper mapper,
             IMediator mediator)
         {
-            _songRepository = songRepository;
-            _artistRepository = artistRepository;
             _mapper = mapper;
             _mediator = mediator;
         }
@@ -59,32 +53,21 @@ namespace MusicAPI.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{songId}/artist")]
-        [ProducesResponseType(200, Type = typeof(Artist))]
+        [HttpGet("/artist/{artistId}")]
+        [ProducesResponseType(200, Type = typeof(SongDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetArtistBySong(int songId)
+        public async Task<IActionResult> GetSongsByArtist(int artistId)
         {
-            if (!_songRepository.SongExists(songId))
-                return NotFound();
+            var request = new GetSongsByArtist
+            {
+                ArtistId = artistId
+            };
 
-            var artist = _mapper.Map<ArtistDto>(_songRepository.GetArtistBySong(songId));
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            return Ok(artist);
-        }
-
-        [HttpGet("{songId}/genres")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Genre>))]
-        [ProducesResponseType(400)]
-        public IActionResult GetGenresOfSong(int songId)
-        {
-            if (!_songRepository.SongExists(songId))
-                return NotFound();
-            var genres = _mapper.Map<List<GenreDto>>(_songRepository.GetGenreOfSong(songId));
+            var response = await _mediator.Send(request);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return Ok(genres);
+            return Ok(response);
         }
 
 
@@ -101,7 +84,7 @@ namespace MusicAPI.Controllers
             return NoContent();
         }
 
-        [HttpPut("{songId}")]
+        /*[HttpPut("{songId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -128,7 +111,7 @@ namespace MusicAPI.Controllers
             }
 
             return NoContent();
-        }
+        }*/
 
       /*  [HttpDelete("{songId}")]
         [ProducesResponseType(400)]
