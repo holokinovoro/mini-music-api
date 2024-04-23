@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Application.Dto;
 using Application.Features.Commands.SongCommands.CreateSong;
 using Domain.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Application.Features.Queries.Song.GetSong;
+using Application.Features.Commands.SongCommands.Update;
+using Application.Features.Commands.SongCommands.Delete;
 
 namespace MusicAPI.Controllers
 {
@@ -84,11 +85,11 @@ namespace MusicAPI.Controllers
             return NoContent();
         }
 
-        /*[HttpPut("{songId}")]
+        [HttpPut("{songId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateSong(int songId, [FromBody] SongDto updatedSong)
+        public async Task<IActionResult> UpdateSong(int songId, [FromBody] SongDto updatedSong)
         {
             if (updatedSong == null)
                 return BadRequest(ModelState);
@@ -96,46 +97,38 @@ namespace MusicAPI.Controllers
             if (songId != updatedSong.Id)
                 return BadRequest(ModelState);
 
-            if (!_songRepository.SongExists(songId))
-                return NotFound();
+            var request = new UpdateSongCommand
+            {
+                Id = songId,
+                UpdateSong = updatedSong
+            };
+
+            await _mediator.Send(request);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var songMap = _mapper.Map<Song>(updatedSong);
-
-            if (!_songRepository.UpdateSong(songMap))
-            {
-                ModelState.AddModelError("", "Somethin wents wrong updating song");
-                return StatusCode(500, ModelState);
-            }
-
             return NoContent();
-        }*/
+        }
 
-      /*  [HttpDelete("{songId}")]
+        [HttpDelete("{songId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteSong(int songId)
+        public async Task<IActionResult> DeleteSong(int songId)
         {
-            if (!_songRepository.SongExists(songId))
-            {
-                return NotFound();
-            }
 
-            var songToDelete = _songRepository.GetSong(songId);
+            var request = new DeleteSongCommand
+            {
+                Id = songId
+            };
+
+            await _mediator.Send(request);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-
-            if (!_songRepository.DeleteSong(songToDelete))
-            {
-                ModelState.AddModelError("", "Something went wrong deleting song");
-            }
-
             return NoContent();
-        }*/
+        }
     }
 }

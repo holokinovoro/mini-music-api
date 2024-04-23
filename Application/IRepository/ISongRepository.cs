@@ -16,9 +16,9 @@ public interface ISongRepository
 
     Task<int> CreateSong(Song song, CancellationToken cancellationToken);
 
-    bool UpdateSong(Song song);
+    void UpdateSong(Song song);
 
-    bool DeleteSong(Song song);
+    void DeleteSong(Song song);
 
-    bool Save();
+    Task Save(CancellationToken cancellationToken);
 }

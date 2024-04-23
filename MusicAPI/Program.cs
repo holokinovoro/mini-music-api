@@ -6,6 +6,7 @@ using System.Reflection;
 using Serilog;
 using Infrastructure;
 using Application.Features.Queries.Song.GetSong;
+using Application.Features.Commands.SongCommands.Update;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,8 @@ builder.Services.AddScoped<ISongRepository, SongRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 
 builder.Services.AddMediatR(x =>
-    x.RegisterServicesFromAssemblies(typeof(GetAllSongsQueryHandler).Assembly, typeof(GetAllSongsQuery).Assembly));
+    x.RegisterServicesFromAssemblies(typeof(GetAllSongsQueryHandler).Assembly, typeof(GetAllSongsQuery).Assembly,
+        typeof(UpdateSongCommandHandler).Assembly, typeof(UpdateSongCommand).Assembly));
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>

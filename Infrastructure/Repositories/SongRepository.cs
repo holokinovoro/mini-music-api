@@ -21,13 +21,12 @@ namespace Infrastructure.Repositories
             return await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public bool DeleteSong(Song song)
+        public void DeleteSong(Song song)
         {
             _context.Remove(song);
-            return Save();
         }
 
-      
+
 
         public async Task<Song> GetSong(int songId, CancellationToken cancellationToken)
         {
@@ -47,10 +46,9 @@ namespace Infrastructure.Repositories
             return songs;
         }
 
-        public bool Save()
+        public async Task  Save(CancellationToken cancellationToken)
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public bool SongExists(int songId)
@@ -58,10 +56,9 @@ namespace Infrastructure.Repositories
             return _context.Songs.Any(e => e.Id == songId);
         }
 
-        public bool UpdateSong(Song song)
+        public void UpdateSong(Song song)
         {
             _context.Update(song);
-            return Save();
         }
     }
 }
