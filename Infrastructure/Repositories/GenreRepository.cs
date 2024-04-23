@@ -42,12 +42,12 @@ namespace Infrastructure.Repositories
             return _context.Genres.Any(p => p.Id == genreId);
         }
 
-        public ICollection<Artist> GetArtistsByGenre(int genreId)
+        public async Task<ICollection<Artist>> GetArtistsByGenre(int genreId, CancellationToken cancellationToken)
         {
-            return _context.ArtistGenres
+            return await _context.ArtistGenres
                 .Where(p => p.GenreId == genreId)
                 .Select(s => s.Artist)
-                .ToList();
+                .ToListAsync();
         }
 
         public Genre GetGenre(int genreId)

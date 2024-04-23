@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Commands\ArtistCommands\Delete\" />
-    <Folder Include="Features\Commands\ArtistCommands\Update\" />
     <Folder Include="Features\Commands\Genre\" />
     <Folder Include="Features\Commands\User\" />
     <Folder Include="Features\Queries\Genre\" />

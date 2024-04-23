@@ -21,7 +21,7 @@ namespace Application.IRepository
 
         Task CreateArtist(int genreId, Artist artist, CancellationToken cancellationToken);
 
-        bool UpdateArtist(int genreId, Artist artist);
+        void UpdateArtist(int genreId, Artist artist);
 
         bool DeleteArtist(Artist artist);
 

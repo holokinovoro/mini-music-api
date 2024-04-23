@@ -76,10 +76,7 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public bool UpdateArtist(int genreId, Artist artist)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public bool DeleteArtist(Artist artist)
         {
@@ -92,7 +89,7 @@ namespace Infrastructure.Repositories
                 .FirstOrDefault();
         }*/
 
-        /*public bool UpdateArtist(int genreId, Artist artist)
+        public void UpdateArtist(int genreId, Artist artist)
         {
             var artistGenreEntity = _context.Genres.Where(e => e.Id == genreId).FirstOrDefault();
 
@@ -103,8 +100,7 @@ namespace Infrastructure.Repositories
             };
             _context.Add(artistGenre);
             _context.Update(artist);
-            return Save();
-        }*/
+        }
 
         /*public bool DeleteArtist(Artist artist)
         {

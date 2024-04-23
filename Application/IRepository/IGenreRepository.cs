@@ -9,7 +9,7 @@ namespace Application.IRepository
 
         Genre GetGenre(int genreId);
 
-        ICollection<Artist> GetArtistsByGenre(int genreId);
+        Task<ICollection<Artist>> GetArtistsByGenre(int genreId, CancellationToken cancellationToken);
 
         ICollection<Song> GetSongsByGenre(int genreId);
 
