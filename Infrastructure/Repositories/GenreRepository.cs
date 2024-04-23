@@ -15,7 +15,7 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public bool CreateGenre(int artistId, Genre genre)
+        public void CreateGenre(int artistId, Genre genre)
         {
             var genreArtistEntity = _context.Artists.Where(e => e.Id == artistId).FirstOrDefault();
 
@@ -28,13 +28,11 @@ namespace Infrastructure.Repositories
 
             _context.Add(artistGenre);
             _context.Add(genre);
-            return Save();
         }
 
-        public bool DeleteGenre(Genre genre)
+        public void DeleteGenre(Genre genre)
         {
             _context.Remove(genre);
-            return Save();
         }
 
         public bool GenreExists(int genreId)
@@ -50,39 +48,50 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public Genre GetGenre(int genreId)
+        public async Task<Genre> GetGenre(int genreId, CancellationToken cancellationToken)
         {
-            return _context.Genres.Where(p => p.Id == genreId).FirstOrDefault();
+            var genre = await _context.Genres.Where(p => p.Id == genreId).FirstOrDefaultAsync(cancellationToken);
+            return genre;
         }
 
-        public ICollection<Genre> GetGenres()
+        public async Task<ICollection<Genre>> GetGenres(CancellationToken cancellationToken)
         {
-            return _context.Genres.ToList();
+            var genres = await _context.Genres.ToListAsync();
+            return genres;
         }
 
-        public Genre GetGenreTrimToUpper(GenreDto genreCreate)
+        public async Task<ICollection<Genre>> GetGenresByArtist(int artistId, CancellationToken cancellationToken)
         {
-            return GetGenres().Where(c => c.Name.Trim().ToUpper() == genreCreate.Name.TrimEnd().ToUpper())
-                .FirstOrDefault();
+            var genres = await _context.ArtistGenres
+                .Where(p => p.ArtistId == artistId)
+                .Select(s => s.Genre)
+                .ToArrayAsync(cancellationToken);
+            return genres;
         }
 
-        public ICollection<Song> GetSongsByGenre(int genreId)
+        public async Task<ICollection<Song>> GetSongsByGenre(int genreId, CancellationToken cancellationToken)
         {
-            return _context.Songs.Where(e => e.Artist.ArtistGenres.Any(ag => ag.GenreId == genreId))
-                .ToList();
+            var songs = await _context.Songs.Where(e => e.Artist.ArtistGenres.Any(ag => ag.GenreId == genreId))
+                .ToListAsync(cancellationToken);
+            return songs;
+        }
+       
+        public async Task Save(CancellationToken cancellationToken)
+        {
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public bool Save()
+        public void UpdateGenre(int artistId, Genre genre)
         {
-            var saved = _context.SaveChanges();
+            var artistGenreEntity = _context.Artists.Where(e => e.Id == artistId).FirstOrDefault();
 
-            return saved > 0 ? true : false;
-        }
-
-        public bool UpdateGenre(int artistId, Genre genre)
-        {
+            var artistGenre = new ArtistGenre()
+            {
+                Genre = genre,
+                Artist = artistGenreEntity,
+            };
+            _context.Add(artistGenre);
             _context.Update(genre);
-            return Save();
         }
     }
 }

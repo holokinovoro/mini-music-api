@@ -23,7 +23,7 @@ namespace Application.IRepository
 
         void UpdateArtist(int genreId, Artist artist);
 
-        bool DeleteArtist(Artist artist);
+        void DeleteArtist(Artist artist);
 
         Task Save(CancellationToken cancellation);
 

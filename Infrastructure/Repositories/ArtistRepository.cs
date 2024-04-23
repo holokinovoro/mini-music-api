@@ -76,19 +76,6 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-       
-
-        public bool DeleteArtist(Artist artist)
-        {
-            throw new NotImplementedException();
-        }
-
-        /*public Artist GetArtistTrimToUpper(ArtistDto artistCreate)
-        {
-            return GetArtists().Where(c => c.Name.Trim().ToUpper() == artistCreate.Name.TrimEnd().ToUpper())
-                .FirstOrDefault();
-        }*/
-
         public void UpdateArtist(int genreId, Artist artist)
         {
             var artistGenreEntity = _context.Genres.Where(e => e.Id == genreId).FirstOrDefault();
@@ -102,10 +89,9 @@ namespace Infrastructure.Repositories
             _context.Update(artist);
         }
 
-        /*public bool DeleteArtist(Artist artist)
+        public void DeleteArtist(Artist artist)
         {
             _context.Remove(artist);
-            return Save();
-        }*/
+        }
     }
 }

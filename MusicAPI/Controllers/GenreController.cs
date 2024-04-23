@@ -1,106 +1,96 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Application.Dto;
+﻿using Application.Dto;
+using Application.Features.Commands.GenreCommands.Create;
+using Application.Features.Commands.GenreCommands.Delete;
+using Application.Features.Commands.GenreCommands.Update;
+using Application.Features.Queries.Genre;
 using Domain.Models;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MusicAPI.Controllers
 {
-    /*[ApiController]
+    [ApiController]
     [Route("api/genres")]
     public class GenreController : ControllerBase
     {
-        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public GenreController()
+        public GenreController(IMediator mediator)
         {
-            
+            _mediator = mediator;
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Genre>))]
         [ProducesResponseType(400)]
-        public IActionResult GetGenres()
+        public async Task<IActionResult> GetGenres()
         {
-            var genres = _mapper.Map<List<GenreDto>>(_genreRepository.GetGenres());
+            var request = new GetAllGenres { };
+
+            var response = await _mediator.Send(request);
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return Ok(genres);
+            return Ok(response);
         }
 
         [HttpGet("{genreId}")]
         [ProducesResponseType(200, Type = typeof(Genre))]
         [ProducesResponseType(400)]
-        public IActionResult GetGenre(int genreId)
+        public async Task<IActionResult> GetGenreById(int genreId)
         {
-            if (!_genreRepository.GenreExists(genreId))
-                return NotFound();
-            var genre = _mapper.Map<GenreDto>(_genreRepository.GetGenre(genreId));
+            var request = new GetGenreById
+            {
+                Id = genreId
+            };
+
+            var response = await _mediator.Send(request);
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return Ok(genre);
+            return Ok(response);
         }
 
-        [HttpGet("{genreId}/artists")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Artist>))]
+        [HttpGet("{artistId}/artist")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Genre>))]
         [ProducesResponseType(400)]
-        public IActionResult GetArtistsByGenre(int genreId)
+        public async Task<IActionResult> GetGenresByArtistId(int artistId)
         {
-            if (!_genreRepository.GenreExists(genreId))
-                return NotFound();
-            var artists = _mapper.Map<List<ArtistDto>>(_genreRepository.GetArtistsByGenre(genreId));
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            return Ok(artists);
-        }
+            var request = new GetGenresByArtistQuery
+            {
+                artistId = artistId
+            };
 
-        [HttpGet("{genreId}/songs")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Song>))]
-        [ProducesResponseType(400)]
-        public IActionResult GetSongsByGenre(int genreId)
-        {
-            if (!_genreRepository.GenreExists(genreId))
-                return NotFound();
-            var songs = _mapper.Map<List<SongDto>>(_genreRepository.GetSongsByGenre(genreId));
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            return Ok(songs);
+            var response = await _mediator.Send(request);
+
+            return Ok(response);
         }
 
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateGenre([FromQuery] int artistId, [FromBody] GenreDto genreCreate)
+        public async Task<IActionResult> CreateGenre([FromQuery] int artistId, [FromBody] GenreDto genreCreate)
         {
             if (genreCreate == null)
                 return BadRequest(ModelState);
 
-            var genres = _genreRepository.GetGenreTrimToUpper(genreCreate);
-
-            if (genres != null)
-            {
-                ModelState.AddModelError("", "Owner already exists");
-                return StatusCode(422, ModelState);
-            }
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var genreMap = _mapper.Map<Genre>(genreCreate);
-
-            if (!_genreRepository.CreateGenre(artistId, genreMap))
+            var request = new CreateGenreCommand
             {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+                artistId = artistId,
+                createGenre = genreCreate
+            };
 
-            return Ok("Successfully created");
+            await _mediator.Send(request);
+
+            return NoContent();
         }
 
         [HttpPut("{genreId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateGenre(int genreId,
+        public async Task<IActionResult> UpdateGenre(int genreId,
             [FromQuery] int artistId,
             [FromBody] GenreDto updatedGenre)
         {
@@ -110,19 +100,17 @@ namespace MusicAPI.Controllers
             if (genreId != updatedGenre.Id)
                 return BadRequest(ModelState);
 
-            if (!_genreRepository.GenreExists(artistId))
-                return NotFound();
-
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var genreMap = _mapper.Map<Genre>(updatedGenre);
-
-            if (!_genreRepository.UpdateGenre(artistId, genreMap))
+            var request = new UpdateGenreCommand
             {
-                ModelState.AddModelError("", "Something went wrong updating genre");
-                return StatusCode(500, ModelState);
-            }
+                ArtistId = artistId,
+                GenreId = genreId,
+                Genre = updatedGenre
+            };
+
+            await _mediator.Send(request);
 
             return NoContent();
         }
@@ -131,23 +119,20 @@ namespace MusicAPI.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteGenre(int genreId)
+        public async Task<IActionResult> DeleteGenre(int genreId)
         {
-            if (!_genreRepository.GenreExists(genreId))
-                return NotFound();
 
-            var genreToDelete = _genreRepository.GetGenre(genreId);
+            var request = new DeleteGenreCommand
+            {
+                GenreId = genreId
+            };
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_genreRepository.DeleteGenre(genreToDelete))
-            {
-                ModelState.AddModelError("", "Something went wrong deleting genre");
-            }
+            await _mediator.Send(request);
 
             return NoContent();
         }
-
-    }*/
+    }
 }

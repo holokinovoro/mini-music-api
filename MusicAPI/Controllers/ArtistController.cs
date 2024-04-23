@@ -1,5 +1,6 @@
 ﻿using Application.Dto;
 using Application.Features.Commands.ArtistCommands.Create;
+using Application.Features.Commands.ArtistCommands.Delete;
 using Application.Features.Commands.ArtistCommands.Update;
 using Application.Features.Queries.Artist;
 using AutoMapper;
@@ -22,7 +23,7 @@ namespace MusicAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{id}/artist")]
+        [HttpGet("{artistId}/artist")]
         [ProducesResponseType(200, Type = typeof(Artist))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetArtistById(int artistId)
@@ -118,7 +119,7 @@ namespace MusicAPI.Controllers
 
             if (artistId != updatedArtist.Id)
                 return BadRequest(ModelState);
-           
+
             if (!ModelState.IsValid)
                 return BadRequest();
 
@@ -134,26 +135,23 @@ namespace MusicAPI.Controllers
             return NoContent();
         }
 
-        /*[HttpDelete("{artistId}")]
+        [HttpDelete("{artistId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteArtist(int artistId)
+        public async Task<IActionResult> DeleteArtist(int artistId)
         {
-            if (!_artistRepository.ArtistExists(artistId))
-                return NotFound();
-
-            var artistToDelete = _artistRepository.GetArtist(artistId);
+            var request = new DeleteArtistCommand
+            {
+                Id = artistId
+            };
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_artistRepository.DeleteArtist(artistToDelete))
-            {
-                ModelState.AddModelError("", "Something went wrong deleting artist");
-            }
+            await _mediator.Send(request);
 
             return NoContent();
-        }*/
+        }
     }
 }

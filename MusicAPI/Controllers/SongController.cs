@@ -71,6 +71,23 @@ namespace MusicAPI.Controllers
             return Ok(response);
         }
 
+        [HttpGet("{genreId}/songs")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Song>))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetSongsByGenre(int genreId)
+        {
+            var request = new GetSongsByGenreQuery
+            {
+                GenreId = genreId
+            };
+
+            var response = await _mediator.Send(request);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(response);
+        }
+
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]

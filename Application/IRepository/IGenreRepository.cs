@@ -5,24 +5,23 @@ namespace Application.IRepository
 {
     public interface IGenreRepository
     {
-        ICollection<Genre> GetGenres();
+        Task<ICollection<Genre>> GetGenres(CancellationToken cancellationToken);
 
-        Genre GetGenre(int genreId);
+        Task<Genre> GetGenre(int genreId, CancellationToken cancellationToken);
 
         Task<ICollection<Artist>> GetArtistsByGenre(int genreId, CancellationToken cancellationToken);
 
-        ICollection<Song> GetSongsByGenre(int genreId);
+        Task<ICollection<Song>> GetSongsByGenre(int genreId, CancellationToken cancellationToken);
 
-        Genre GetGenreTrimToUpper(GenreDto genreCreate);
+        Task<ICollection<Genre>> GetGenresByArtist(int artistId, CancellationToken cancellationToken);
 
+        void CreateGenre(int artistId, Genre genre);
 
-        bool CreateGenre(int artistId, Genre genre);
+        void UpdateGenre(int artistId, Genre genre);
 
-        bool UpdateGenre(int artistId, Genre genre);
+        void DeleteGenre(Genre genre);
 
-        bool DeleteGenre(Genre genre);
-
-        bool Save();
+        Task Save(CancellationToken cancellationToken);
 
         bool GenreExists(int genreId);
     }
