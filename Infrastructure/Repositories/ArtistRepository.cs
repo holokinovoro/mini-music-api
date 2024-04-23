@@ -15,9 +15,9 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<ICollection<Artist>> GetArtists()
+        public async Task<ICollection<Artist>> GetArtists(CancellationToken cancellationToken)
         {
-            return await _context.Artists.OrderBy(p => p.Id).ToListAsync();
+            return await _context.Artists.OrderBy(p => p.Id).ToListAsync(cancellationToken);
         }
 
         public async Task<Artist?> GetArtist(int id, CancellationToken cancellationToken)
@@ -26,11 +26,6 @@ namespace Infrastructure.Repositories
             return artist;
         }
        
-
-        public ICollection<Song> GetSongsFromArtist(int artistId)
-        {
-            return _context.Songs.Where(s => s.Artist.Id == artistId).ToList();
-        }
 
         public ICollection<Genre> GetGenreByArtist(int artistId)
         {
@@ -60,7 +55,7 @@ namespace Infrastructure.Repositories
             return _context.Songs.Where(e => e.Id == songId).Select(c => c.Artist).FirstOrDefault();
         }
 
-        public bool CreateArtist(int genreId, Artist artist)
+        public async Task CreateArtist(int genreId, Artist artist, CancellationToken cancellationToken)
         {
             var artistGenreEntity = _context.Genres.Where(e => e.Id == genreId).FirstOrDefault();
 
@@ -72,13 +67,23 @@ namespace Infrastructure.Repositories
 
             _context.Add(artistGenre);
             _context.Add(artist);
-            return Save();
+            await Save(cancellationToken);
+
         }
 
-        public bool Save()
+        public async Task Save(CancellationToken cancellation)
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            await _context.SaveChangesAsync();
+        }
+
+        public bool UpdateArtist(int genreId, Artist artist)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteArtist(Artist artist)
+        {
+            throw new NotImplementedException();
         }
 
         /*public Artist GetArtistTrimToUpper(ArtistDto artistCreate)
@@ -87,7 +92,7 @@ namespace Infrastructure.Repositories
                 .FirstOrDefault();
         }*/
 
-        public bool UpdateArtist(int genreId, Artist artist)
+        /*public bool UpdateArtist(int genreId, Artist artist)
         {
             var artistGenreEntity = _context.Genres.Where(e => e.Id == genreId).FirstOrDefault();
 
@@ -99,12 +104,12 @@ namespace Infrastructure.Repositories
             _context.Add(artistGenre);
             _context.Update(artist);
             return Save();
-        }
+        }*/
 
-        public bool DeleteArtist(Artist artist)
+        /*public bool DeleteArtist(Artist artist)
         {
             _context.Remove(artist);
             return Save();
-        }
+        }*/
     }
 }

@@ -31,7 +31,10 @@ builder.Services.AddMediatR(x =>
     x.RegisterServicesFromAssemblies(typeof(GetAllSongsQueryHandler).Assembly, typeof(GetAllSongsQuery).Assembly,
         typeof(UpdateSongCommandHandler).Assembly, typeof(UpdateSongCommand).Assembly));
 
+
+
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

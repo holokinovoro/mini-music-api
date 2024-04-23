@@ -5,11 +5,10 @@ namespace Application.IRepository
 {
     public interface IArtistRepository
     {
-        Task<ICollection<Artist>> GetArtists();
+        Task<ICollection<Artist>> GetArtists(CancellationToken cancellationToken);
 
         Task<Artist?> GetArtist(int id, CancellationToken cancellationToken);
 
-        ICollection<Song> GetSongsFromArtist(int artistId);
 
         Artist GetArtisyBySong(int songId);
 
@@ -20,13 +19,13 @@ namespace Application.IRepository
         bool ArtistExists(int id);
         bool ArtistExists(string name);
 
-        bool CreateArtist(int genreId, Artist artist);
+        Task CreateArtist(int genreId, Artist artist, CancellationToken cancellationToken);
 
         bool UpdateArtist(int genreId, Artist artist);
 
         bool DeleteArtist(Artist artist);
 
-        bool Save();
+        Task Save(CancellationToken cancellation);
 
 
     }

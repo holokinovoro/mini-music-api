@@ -1,50 +1,53 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Application.Dto;
+﻿using Application.Dto;
+using Application.Features.Commands.ArtistCommands.Create;
+using Application.Features.Queries.Artist;
+using AutoMapper;
 using Domain.Models;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MusicAPI.Controllers
 {
-   /* [ApiController]
+    [ApiController]
     [Route("api/artists")]
     public class ArtistController : ControllerBase
     {
+        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public ArtistController(IArtistRepository artistRepository, IMapper mapper)
+        public ArtistController(IMediator mediator, IMapper mapper)
         {
-            _artistRepository = artistRepository;
+            _mediator = mediator;
             _mapper = mapper;
         }
-*/
-      /*  [HttpGet("{id}/artist")]
-        [ProducesResponseType(200, Type = typeof(Artist))]
-        [ProducesResponseType(400)]
-        public IActionResult GetArtist(int id)
-        {
-            if (!_artistRepository.ArtistExists(id))
-                return NotFound();
 
-            var artist = _mapper.Map<ArtistDto>(_artistRepository.GetArtist(id));
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        /*  [HttpGet("{id}/artist")]
+          [ProducesResponseType(200, Type = typeof(Artist))]
+          [ProducesResponseType(400)]
+          public IActionResult GetArtist(int id)
+          {
+              if (!_artistRepository.ArtistExists(id))
+                  return NotFound();
 
-            return Ok(artist);
-        }*/
+              var artist = _mapper.Map<ArtistDto>(_artistRepository.GetArtist(id));
+              if (!ModelState.IsValid)
+                  return BadRequest(ModelState);
 
-        /*[HttpGet]
+              return Ok(artist);
+          }*/
+
+        [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Artist>))]
         [ProducesResponseType(400)]
-        public IActionResult GetArtists()
+        public async Task<IActionResult> GetArtists()
         {
-            var artists = _mapper.Map<List<ArtistDto>>(_artistRepository.GetArtists());
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var request = new GetAllArtistsQuery();
+            var response = await _mediator.Send(request);
 
-            return Ok(artists);
+            return Ok(response);
         }
 
-        [HttpGet("songs/{artistId}")]
+    /*    [HttpGet("songs/{artistId}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Song>))]
         [ProducesResponseType(400)]
         public IActionResult GetSongsByArtistId(int artistId)
@@ -84,66 +87,58 @@ namespace MusicAPI.Controllers
             return Ok(artist);
         }*/
 
-        /*[HttpPost]
+        [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateArtist([FromQuery] int genreId, [FromBody] ArtistDto artistCreate)
+        public async Task<IActionResult> CreateArtist([FromQuery] int genreId, [FromBody] ArtistDto artistCreate)
         {
             if (artistCreate == null)
                 return BadRequest(ModelState);
 
-            var artists = _artistRepository.GetArtistTrimToUpper(artistCreate);
-
-            if (artists != null)
+            var request = new CreateArtistCommand
             {
-                ModelState.AddModelError("", "Owner already exists");
-                return StatusCode(422, ModelState);
-            }
+                GenreId = genreId,
+                CreateArtist = artistCreate
+            };
+
+            await _mediator.Send(request);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            var artistMap = _mapper.Map<Artist>(artistCreate);
-
-            if(!_artistRepository.CreateArtist(genreId, artistMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
-
-            return Ok("Successfully created");
-        }*/
-
-       /* [HttpPut("{artistId}")]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        public IActionResult UpdateArtist(int artistId,
-            [FromQuery] int genreId,
-            [FromBody] ArtistDto updatedArtist)
-        {
-            if (updatedArtist == null)
-                return BadRequest(ModelState);
-
-            if (artistId != updatedArtist.Id)
-                return BadRequest(ModelState);
-
-            if (!_artistRepository.ArtistExists(artistId))
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            var artistMap = _mapper.Map<Artist>(updatedArtist);
-
-            if (!_artistRepository.UpdateArtist(genreId, artistMap))
-            {
-                ModelState.AddModelError("", "Something went wrong updating artist");
-                return StatusCode(500, ModelState);
-            }
 
             return NoContent();
-        }*/
+        }
+
+        /* [HttpPut("{artistId}")]
+         [ProducesResponseType(400)]
+         [ProducesResponseType(204)]
+         [ProducesResponseType(404)]
+         public IActionResult UpdateArtist(int artistId,
+             [FromQuery] int genreId,
+             [FromBody] ArtistDto updatedArtist)
+         {
+             if (updatedArtist == null)
+                 return BadRequest(ModelState);
+
+             if (artistId != updatedArtist.Id)
+                 return BadRequest(ModelState);
+
+             if (!_artistRepository.ArtistExists(artistId))
+                 return NotFound();
+
+             if (!ModelState.IsValid)
+                 return BadRequest();
+
+             var artistMap = _mapper.Map<Artist>(updatedArtist);
+
+             if (!_artistRepository.UpdateArtist(genreId, artistMap))
+             {
+                 ModelState.AddModelError("", "Something went wrong updating artist");
+                 return StatusCode(500, ModelState);
+             }
+
+             return NoContent();
+         }*/
 
         /*[HttpDelete("{artistId}")]
         [ProducesResponseType(400)]
@@ -166,7 +161,5 @@ namespace MusicAPI.Controllers
 
             return NoContent();
         }*/
-/*
-
-    }*/
+    }
 }

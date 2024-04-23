@@ -73,8 +73,9 @@ namespace MusicAPI.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateSong(CreateSongCommand command)
         {
             var response = await _mediator.Send(command);
