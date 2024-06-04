@@ -41,10 +41,10 @@ namespace Infrastructure.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,7 +74,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ArtistGenre",
+                name: "ArtistGenres",
                 columns: table => new
                 {
                     ArtistId = table.Column<int>(type: "int", nullable: false),
@@ -82,15 +82,15 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ArtistGenre", x => new { x.ArtistId, x.GenreId });
+                    table.PrimaryKey("PK_ArtistGenres", x => new { x.ArtistId, x.GenreId });
                     table.ForeignKey(
-                        name: "FK_ArtistGenre_Artists_ArtistId",
+                        name: "FK_ArtistGenres_Artists_ArtistId",
                         column: x => x.ArtistId,
                         principalTable: "Artists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ArtistGenre_Genres_GenreId",
+                        name: "FK_ArtistGenres_Genres_GenreId",
                         column: x => x.GenreId,
                         principalTable: "Genres",
                         principalColumn: "Id",
@@ -98,8 +98,8 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ArtistGenre_GenreId",
-                table: "ArtistGenre",
+                name: "IX_ArtistGenres_GenreId",
+                table: "ArtistGenres",
                 column: "GenreId");
 
             migrationBuilder.CreateIndex(
@@ -112,7 +112,7 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ArtistGenre");
+                name: "ArtistGenres");
 
             migrationBuilder.DropTable(
                 name: "Songs");

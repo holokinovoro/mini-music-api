@@ -5,12 +5,14 @@ using Application.Features.Commands.GenreCommands.Update;
 using Application.Features.Queries.Genre;
 using Domain.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MusicAPI.Controllers
 {
     [ApiController]
     [Route("api/genres")]
+    [Authorize]
     public class GenreController : ControllerBase
     {
         private readonly IMediator _mediator;

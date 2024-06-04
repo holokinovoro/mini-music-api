@@ -1,8 +1,8 @@
 ﻿using Domain.Models;
 
-namespace Application.IRepository;
+namespace Application.Interfaces.IRepository;
 
-public interface ISongRepository 
+public interface ISongRepository
 {
     Task<ICollection<Song>> GetSongs(CancellationToken cancellationToken);
 

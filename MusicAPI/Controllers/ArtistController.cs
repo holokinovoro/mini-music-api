@@ -6,21 +6,21 @@ using Application.Features.Queries.Artist;
 using AutoMapper;
 using Domain.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MusicAPI.Controllers
 {
     [ApiController]
     [Route("api/artists")]
+    [Authorize]
     public class ArtistController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
 
-        public ArtistController(IMediator mediator, IMapper mapper)
+        public ArtistController(IMediator mediator)
         {
             _mediator = mediator;
-            _mapper = mapper;
         }
 
         [HttpGet("{artistId}/artist")]

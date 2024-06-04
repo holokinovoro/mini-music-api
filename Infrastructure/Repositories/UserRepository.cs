@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
 using Application.Dto;
-using Application.IRepository;
 using Domain.Models;
+using Application.Interfaces.IRepository;
 
 namespace Infrastructure.Repositories
 {
@@ -15,61 +15,20 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public ICollection<User> GetUsers()
+        public async Task Add(User user)
         {
-            return  _context.Users.OrderBy(p => p.Id).ToList();
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
         }
 
-        
-
-        public  User GetUser(int id)
+        public async Task<User> GetByEmail(string email)
         {
-            return  _context.Users.Where(p => p.Id == id).FirstOrDefault();
-        }
+            var user = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Email == email) ?? throw new ArgumentNullException
+                (nameof(email));
 
-        public User GetUser(string name)
-        {
-            return  _context.Users.Where(p => p.UserName == name).FirstOrDefault();
-        }
-
-        public bool UserExists(int userId)
-        {
-            return _context.Users.Any(p => p.Id == userId);
-        }
-
-        public bool UserExists(string name)
-        {
-            return _context.Users.Any(p => p.UserName == name);
-        }
-
-        public User GetUserTrimToUpper(UserDto userCreate)
-        {
-            return GetUsers().Where(e => e.UserName.Trim().ToUpper() == userCreate.UserName.TrimEnd().ToUpper())
-                .FirstOrDefault();
-        }
-
-        public bool CreateUser(User user)
-        {
-            _context.Add(user);
-            return Save();
-        }
-
-        public bool Save()
-        {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
-        }
-
-        public bool UpdateUser(User user)
-        {
-            _context.Update(user);
-            return Save();
-        }
-
-        public bool DeleteUser(User user)
-        {
-            _context.Remove(user);
-            return Save();
+            return user;
         }
     }
 }

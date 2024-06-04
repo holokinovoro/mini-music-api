@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
 using Application.Dto;
-using Application.IRepository;
 using Domain.Models;
+using Application.Interfaces.IRepository;
 
 namespace Infrastructure.Repositories
 {

@@ -1,7 +1,7 @@
 ﻿using Application.Dto;
 using Domain.Models;
 
-namespace Application.IRepository
+namespace Application.Interfaces.IRepository
 {
     public interface IArtistRepository
     {
@@ -14,7 +14,7 @@ namespace Application.IRepository
 
         ICollection<Genre> GetGenreByArtist(int artistId);
 
-       /* Artist GetArtistTrimToUpper(ArtistDto artistCreate);*/
+        /* Artist GetArtistTrimToUpper(ArtistDto artistCreate);*/
 
         bool ArtistExists(int id);
         bool ArtistExists(string name);

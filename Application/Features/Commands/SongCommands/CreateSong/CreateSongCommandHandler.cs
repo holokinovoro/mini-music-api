@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using Application.IRepository;
 using Domain;
 using Domain.Models;
+using Application.Interfaces.IRepository;
 
 namespace Application.Features.Commands.SongCommands.CreateSong
 {

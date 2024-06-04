@@ -7,11 +7,13 @@ using Domain.Models;
 using Application.Features.Queries.Song.GetSong;
 using Application.Features.Commands.SongCommands.Update;
 using Application.Features.Commands.SongCommands.Delete;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MusicAPI.Controllers
 {
     [ApiController]
     [Route("api/songs")]
+    [Authorize]
     public class SongController : ControllerBase
     {
         private readonly IMapper _mapper;

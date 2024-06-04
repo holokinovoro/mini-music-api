@@ -11,6 +11,11 @@ namespace Infrastructure.Data
 
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            
+        }
+
         public DbSet<User> Users { get; set; }
 
         public DbSet<Artist> Artists { get; set; }

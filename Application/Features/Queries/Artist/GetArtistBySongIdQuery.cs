@@ -1,5 +1,5 @@
 ﻿using Application.Dto;
-using Application.IRepository;
+using Application.Interfaces.IRepository;
 using MediatR;
 using System;
 using System.Collections.Generic;

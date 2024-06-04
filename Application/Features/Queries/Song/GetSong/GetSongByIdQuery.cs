@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Application.Dto;
-using Application.IRepository;
 using Domain.Models;
+using Application.Interfaces.IRepository;
 
 namespace Application.Features.Queries.Song.GetSong
 {

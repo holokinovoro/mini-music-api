@@ -1,5 +1,5 @@
 ﻿using Application.Dto;
-using Application.IRepository;
+using Application.Interfaces.IRepository;
 using Domain.Models;
 using MediatR;
 using System;

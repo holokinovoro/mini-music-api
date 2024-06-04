@@ -1,7 +1,7 @@
 ﻿using Application.Dto;
 using Domain.Models;
 
-namespace Application.IRepository
+namespace Application.Interfaces.IRepository
 {
     public interface IGenreRepository
     {

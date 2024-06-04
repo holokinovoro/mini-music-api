@@ -1,4 +1,5 @@
-﻿using Application.IRepository;
+﻿using Application.Interfaces.Auth;
+using Application.Interfaces.IRepository;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure
+namespace Infrastructure.Services
 {
     public static class InfrastructureServicesReg
     {
@@ -22,10 +23,14 @@ namespace Infrastructure
                 options.UseSqlServer(connectionString);
             });
 
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IArtistRepository, ArtistRepository>();
             services.AddScoped<ISongRepository, SongRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
+
+            services.AddScoped<IJwtProvider, JwtProvider>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             return services;
         }
