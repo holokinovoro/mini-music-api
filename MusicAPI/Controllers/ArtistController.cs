@@ -24,6 +24,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpGet("{artistId}/artist")]
+        [Authorize(Policy = "PermissionRead")]
         [ProducesResponseType(200, Type = typeof(Artist))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetArtistById(int artistId)
@@ -42,6 +43,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "PermissionRead")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Artist>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetArtists()
@@ -53,6 +55,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpGet("artist/genre/{genreId}")]
+        [Authorize(Policy = "PermissionRead")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Artist>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetArtistsByGenreId(int genreId)
@@ -68,6 +71,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpGet("artist/{songId}")]
+        [Authorize(Policy = "PermissionRead")]
         [ProducesResponseType(200, Type = typeof(Artist))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetArtistBySongId(int songId)
@@ -85,6 +89,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "PermissionCreate")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateArtist([FromQuery] int genreId, [FromBody] ArtistDto artistCreate)
@@ -107,6 +112,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpPut("{artistId}")]
+        [Authorize(Policy = "PermissionUpdate")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -136,6 +142,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpDelete("{artistId}")]
+        [Authorize(Policy = "PermissionDelete")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

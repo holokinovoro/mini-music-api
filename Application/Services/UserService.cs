@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.Auth;
 using Application.Interfaces.IRepository;
+using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Services;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly IJwtProvider _jwtProvider;
         private readonly IUserRepository _userRepository;
@@ -41,7 +42,7 @@ namespace Application.Services
 
             var result = _passwordHasher.Verify(password, user.PasswordHash);
 
-            if(result == false)
+            if (result == false)
             {
                 throw new Exception("Failed to login");
             }

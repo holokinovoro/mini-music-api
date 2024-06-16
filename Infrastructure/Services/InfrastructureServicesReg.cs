@@ -1,38 +1,38 @@
 ﻿using Application.Interfaces.Auth;
 using Application.Interfaces.IRepository;
+using Infrastructure.Authentication;
 using Infrastructure.Data;
+using Infrastructure.Mappings;
 using Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Infrastructure.Services
+
+namespace Infrastructure.Services;
+
+public static class InfrastructureServicesReg
 {
-    public static class InfrastructureServicesReg
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.AddDbContext<DataContext>(options =>
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<DataContext>(options =>
-            {
-                options.UseSqlServer(connectionString);
-            });
+            options.UseSqlServer(connectionString);
+        });
 
 
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IArtistRepository, ArtistRepository>();
-            services.AddScoped<ISongRepository, SongRepository>();
-            services.AddScoped<IGenreRepository, GenreRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IArtistRepository, ArtistRepository>();
+        services.AddScoped<ISongRepository, SongRepository>();
+        services.AddScoped<IGenreRepository, GenreRepository>();
 
-            services.AddScoped<IJwtProvider, JwtProvider>();
-            services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IJwtProvider, JwtProvider>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
 
-            return services;
-        }
+        services.AddAutoMapper(typeof(DbMappings));
+
+        return services;
     }
 }

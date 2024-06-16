@@ -8,6 +8,7 @@ using Application.Features.Queries.Song.GetSong;
 using Application.Features.Commands.SongCommands.Update;
 using Application.Features.Commands.SongCommands.Delete;
 using Microsoft.AspNetCore.Authorization;
+using Infrastructure.Authentication;
 
 namespace MusicAPI.Controllers
 {
@@ -28,6 +29,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "PermissionRead")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Song>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetAllSongs()

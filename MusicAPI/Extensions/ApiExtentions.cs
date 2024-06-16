@@ -1,48 +1,72 @@
-﻿
-using Infrastructure;
+﻿using Application.Services;
+using Domain.Enums;
+using Domain.Interfaces;
+using Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace MusicAPI.Extensions
+namespace MusicAPI.Extensions;
+
+public static class ApiExtentions
 {
-    public static class ApiExtentions
+    public static void AddApiAuthentication(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static void AddApiAuthentication(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
+        services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 
-            var jwtOptions = configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>();
+        var jwtOptions = configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>();
 
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+
+        services.
+            AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.TokenValidationParameters = new()
                 {
-                    options.TokenValidationParameters = new()
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtOptions!.SecretKey))
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
                     {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(jwtOptions!.SecretKey))
-                    };
+                        context.Token = context.Request.Cookies["pookie-cookies"];
 
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            context.Token = context.Request.Cookies["pookie-cookies"];
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
-                            return Task.CompletedTask;
-                        }
-                    };
-                });
+        services.AddScoped<IPermissionService, PermissionService>();
+        services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
-            services.AddAuthorization();
-        }
+        services.AddAuthorization();
     }
+
+    public static IEndpointConventionBuilder RequirePermissions<TBuilder>(
+    this TBuilder builder, params Permission[] permissions)
+        where TBuilder : IEndpointConventionBuilder
+    {
+        return builder
+            .RequireAuthorization(pb =>
+                pb.AddRequirements(new PermissionRequirement(permissions)));
+    }
+
 }

@@ -11,10 +11,13 @@ using Infrastructure.Services;
 using Application.Interfaces.Auth;
 using MusicAPI.Extensions;
 using Infrastructure;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Authorization;
+using AuthorizationOptions = Infrastructure.AuthorizationOptions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -33,6 +36,9 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 
 builder.Services.AddApiAuthentication(builder.Configuration);
+
+builder.Services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
+
 
 var app = builder.Build();
 
