@@ -25,6 +25,9 @@ namespace Infrastructure.Repositories
             .SingleOrDefaultAsync(r => r.Id == (int)Role.User)
             ?? throw new InvalidOperationException();
 
+            ICollection<RoleEntity> roles = new List<RoleEntity> { };
+
+            roles.Append(roleEntity);
 
             var userEntity = new UserEntity()
             {
@@ -32,9 +35,16 @@ namespace Infrastructure.Repositories
                 UserName = user.UserName,
                 PasswordHash = user.PasswordHash,
                 Email = user.Email,
-                Roles = { roleEntity }
+                Roles = roles
             };
 
+            var userRole = new UserRole()
+            {
+                UserId = userEntity.Id,
+                RoleId = roleEntity.Id
+            };
+
+            await _context.UserRoles.AddAsync(userRole);
             await _context.Users.AddAsync(userEntity);
             await _context.SaveChangesAsync();
         }

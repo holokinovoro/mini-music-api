@@ -23,6 +23,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "PermissionRead")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Genre>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetGenres()
@@ -35,6 +36,7 @@ namespace MusicAPI.Controllers
             return Ok(response);
         }
 
+        [Authorize(Policy = "PermissionRead")]
         [HttpGet("{genreId}")]
         [ProducesResponseType(200, Type = typeof(Genre))]
         [ProducesResponseType(400)]
@@ -51,6 +53,7 @@ namespace MusicAPI.Controllers
             return Ok(response);
         }
 
+        [Authorize(Policy = "PermissionRead")]
         [HttpGet("{artistId}/artist")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Genre>))]
         [ProducesResponseType(400)]
@@ -67,6 +70,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "PermissionCreate")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateGenre([FromQuery] int artistId, [FromBody] GenreDto genreCreate)
@@ -89,6 +93,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpPut("{genreId}")]
+        [Authorize(Policy = "PermissionUpdate")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -118,6 +123,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpDelete("{genreId}")]
+        [Authorize(Policy = "PermissionDelete")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

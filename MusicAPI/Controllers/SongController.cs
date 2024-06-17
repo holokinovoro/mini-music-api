@@ -42,6 +42,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpGet("{songId}")]
+        [Authorize(Policy = "PermissionRead")]
         [ProducesResponseType(200, Type = typeof(SongDto))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetSong(int songId)
@@ -59,6 +60,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpGet("/artist/{artistId}")]
+        [Authorize(Policy = "PermissionRead")]
         [ProducesResponseType(200, Type = typeof(SongDto))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetSongsByArtist(int artistId)
@@ -76,6 +78,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpGet("{genreId}/songs")]
+        [Authorize(Policy = "PermissionRead")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Song>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetSongsByGenre(int genreId)
@@ -94,6 +97,7 @@ namespace MusicAPI.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "PermissionCreate")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -108,6 +112,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpPut("{songId}")]
+        [Authorize(Policy = "PermissionUpdate")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -134,6 +139,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpDelete("{songId}")]
+        [Authorize(Policy = "PermissionDelete")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
