@@ -3,44 +3,43 @@ using Domain;
 using Domain.Models;
 using Application.Interfaces.IRepository;
 
-namespace Application.Features.Commands.SongCommands.CreateSong
+namespace Application.Features.Commands.SongCommands.CreateSong;
+
+public class CreateSongCommandHandler : IRequestHandler<CreateSongCommand, int>
 {
-    public class CreateSongCommandHandler : IRequestHandler<CreateSongCommand, int>
+    private readonly ISongRepository _songRepository;
+    private readonly IArtistRepository _artistRepository;
+    /*  private readonly ILogger _logger;*//**/
+
+    public CreateSongCommandHandler(ISongRepository songRepository, IArtistRepository artistRepository)
     {
-        private readonly ISongRepository _songRepository;
-        private readonly IArtistRepository _artistRepository;
-        /*  private readonly ILogger _logger;*//**/
+        _songRepository = songRepository ?? throw new ArgumentNullException(nameof(songRepository));
+        _artistRepository = artistRepository ?? throw new ArgumentNullException(nameof(artistRepository));
+        /* _logger = logger ?? throw new ArgumentNullException(nameof(logger));*/
+    }
 
-        public CreateSongCommandHandler(ISongRepository songRepository, IArtistRepository artistRepository)
+    public async Task<int> Handle(CreateSongCommand request, CancellationToken cancellationToken)
+    {
+        var artist = await _artistRepository.GetArtist(request.artistId, cancellationToken);
+        if (artist == null)
         {
-            _songRepository = songRepository ?? throw new ArgumentNullException(nameof(songRepository));
-            _artistRepository = artistRepository ?? throw new ArgumentNullException(nameof(artistRepository));
-            /* _logger = logger ?? throw new ArgumentNullException(nameof(logger));*/
+            /*_logger.LogWarning("Not found");*/
+            return 0;
         }
 
-        public async Task<int> Handle(CreateSongCommand request, CancellationToken cancellationToken)
+
+        var song = new Song
         {
-            var artist = await _artistRepository.GetArtist(request.artistId, cancellationToken);
-            if (artist == null)
-            {
-                /*_logger.LogWarning("Not found");*/
-                return 0;
-            }
+            Id = request.createSong.Id,
+            Title = request.createSong.Title,
+            Artist = artist,
+            Duration = request.createSong.Duration,
+            ReleaseDate = request.createSong.ReleaseDate
+        };
 
+        await _songRepository.CreateSong(song, cancellationToken);
+        /* _logger.LogInformation("Song Created");*/
 
-            var song = new Song
-            {
-                Id = request.createSong.Id,
-                Title = request.createSong.Title,
-                Artist = artist,
-                Duration = request.createSong.Duration,
-                ReleaseDate = request.createSong.ReleaseDate
-            };
-
-            await _songRepository.CreateSong(song, cancellationToken);
-            /* _logger.LogInformation("Song Created");*/
-
-            return song.Id;
-        }
+        return song.Id;
     }
 }

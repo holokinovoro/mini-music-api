@@ -1,40 +1,34 @@
 ﻿using Application.Dto;
 using Application.Interfaces.IRepository;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Application.Features.Queries.Song.GetSong
+namespace Application.Features.Queries.Song.GetSong;
+
+public class GetSongsByGenreQuery : IRequest<List<SongDto>>
 {
-    public class GetSongsByGenreQuery : IRequest<List<SongDto>>
+    public int GenreId { get; set; }
+}
+
+public class GetSongsByGenreQueryHandler : IRequestHandler<GetSongsByGenreQuery, List<SongDto>>
+{
+    private readonly IGenreRepository _genreRepository;
+
+    public GetSongsByGenreQueryHandler(IGenreRepository genreRepository)
     {
-        public int GenreId { get; set; }
+        _genreRepository = genreRepository;
     }
-
-    public class GetSongsByGenreQueryHandler : IRequestHandler<GetSongsByGenreQuery, List<SongDto>>
+    public async Task<List<SongDto>> Handle(GetSongsByGenreQuery request, CancellationToken cancellationToken)
     {
-        private readonly IGenreRepository _genreRepository;
+        var songs = await _genreRepository.GetSongsByGenre(request.GenreId, cancellationToken);
 
-        public GetSongsByGenreQueryHandler(IGenreRepository genreRepository)
+        var response = songs.Select(s => new SongDto
         {
-            _genreRepository = genreRepository;
-        }
-        public async Task<List<SongDto>> Handle(GetSongsByGenreQuery request, CancellationToken cancellationToken)
-        {
-            var songs = await _genreRepository.GetSongsByGenre(request.GenreId, cancellationToken);
+            Id = s.Id,
+            Title = s.Title,
+            Duration = s.Duration,
+            ReleaseDate = s.ReleaseDate
+        }).ToList();
 
-            var response = songs.Select(s => new SongDto
-            {
-                Id = s.Id,
-                Title = s.Title,
-                Duration = s.Duration,
-                ReleaseDate = s.ReleaseDate
-            }).ToList();
-
-            return response;
-        }
+        return response;
     }
 }

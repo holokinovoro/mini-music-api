@@ -116,17 +116,13 @@ namespace MusicAPI.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateSong(int songId, [FromBody] SongDto updatedSong)
+        public async Task<IActionResult> UpdateSong([FromBody] SongDto updatedSong)
         {
             if (updatedSong == null)
                 return BadRequest(ModelState);
 
-            if (songId != updatedSong.Id)
-                return BadRequest(ModelState);
-
             var request = new UpdateSongCommand
             {
-                Id = songId,
                 UpdateSong = updatedSong
             };
 

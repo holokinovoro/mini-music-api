@@ -1,35 +1,29 @@
 ﻿using Application.Dto;
 using Application.Interfaces.IRepository;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Application.Features.Queries.Artist
+namespace Application.Features.Queries.Artist;
+
+public class GetAllArtistsQuery : IRequest<List<ArtistDto>>{}
+
+public class GetAllArtistQueryHandler : IRequestHandler<GetAllArtistsQuery, List<ArtistDto>>
 {
-    public class GetAllArtistsQuery : IRequest<List<ArtistDto>>{}
+    private readonly IArtistRepository _artistRepository;
 
-    public class GetAllArtistQueryHandler : IRequestHandler<GetAllArtistsQuery, List<ArtistDto>>
+    public GetAllArtistQueryHandler(IArtistRepository artistRepository)
     {
-        private readonly IArtistRepository _artistRepository;
+        _artistRepository = artistRepository;
+    }
+    public async Task<List<ArtistDto>> Handle(GetAllArtistsQuery request, CancellationToken cancellationToken)
+    {
+        var artists = await _artistRepository.GetArtists(cancellationToken);
 
-        public GetAllArtistQueryHandler(IArtistRepository artistRepository)
+        var response = artists.Select(s => new ArtistDto
         {
-            _artistRepository = artistRepository;
-        }
-        public async Task<List<ArtistDto>> Handle(GetAllArtistsQuery request, CancellationToken cancellationToken)
-        {
-            var artists = await _artistRepository.GetArtists(cancellationToken);
+            Id = s.Id,
+            Name = s.Name
+        }).ToList();
 
-            var response = artists.Select(s => new ArtistDto
-            {
-                Id = s.Id,
-                Name = s.Name
-            }).ToList();
-
-            return response;
-        }
+        return response;
     }
 }

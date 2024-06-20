@@ -9,7 +9,7 @@ namespace Domain.Models
 
         public Artist Artist { get; set; }
 
-        public int Duration { get; set; }
+        public string Duration { get; set; }
 
         public DateTime ReleaseDate { get; set; }
 

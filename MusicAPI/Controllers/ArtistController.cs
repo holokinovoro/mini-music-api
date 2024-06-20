@@ -116,22 +116,19 @@ namespace MusicAPI.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateArtist(int artistId,
+        public async Task<IActionResult> UpdateArtist(
             [FromQuery] int genreId,
             [FromBody] ArtistDto updatedArtist)
         {
             if (updatedArtist == null)
                 return BadRequest(ModelState);
 
-            if (artistId != updatedArtist.Id)
-                return BadRequest(ModelState);
 
             if (!ModelState.IsValid)
                 return BadRequest();
 
             var request = new UpdateArtistCommand
             {
-                ArtistId = artistId,
                 GenreId = genreId,
                 ArtistUpdate = updatedArtist
             };

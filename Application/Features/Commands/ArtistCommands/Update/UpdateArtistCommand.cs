@@ -11,7 +11,6 @@ namespace Application.Features.Commands.ArtistCommands.Update
 {
     public class UpdateArtistCommand : IRequest
     {
-        public int ArtistId { get; set; }
         public int GenreId { get; set; }
 
         public ArtistDto ArtistUpdate { get; set; }
@@ -27,7 +26,7 @@ namespace Application.Features.Commands.ArtistCommands.Update
         }
         public async Task Handle(UpdateArtistCommand request, CancellationToken cancellationToken)
         {
-            var artist = await _artistRepository.GetArtist(request.ArtistId, cancellationToken);
+            var artist = await _artistRepository.GetArtist(request.ArtistUpdate.Id, cancellationToken);
 
             if(!_artistRepository.ArtistExists(artist.Id))
                 throw new ArgumentNullException(nameof(artist));

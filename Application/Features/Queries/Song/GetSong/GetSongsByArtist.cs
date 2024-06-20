@@ -2,35 +2,34 @@
 using Application.Dto;
 using Application.Interfaces.IRepository;
 
-namespace Application.Features.Queries.Song.GetSong
+namespace Application.Features.Queries.Song.GetSong;
+
+public class GetSongsByArtist : IRequest<List<SongDto>>
 {
-    public class GetSongsByArtist : IRequest<List<SongDto>>
+    public int ArtistId { get; set; }
+}
+
+public class GetSongsByArtistHandler : IRequestHandler<GetSongsByArtist, List<SongDto>>
+{
+    private readonly ISongRepository _songRepository;
+
+    public GetSongsByArtistHandler(ISongRepository songRepository)
     {
-        public int ArtistId { get; set; }
+        _songRepository = songRepository;
     }
 
-    public class GetSongsByArtistHandler : IRequestHandler<GetSongsByArtist, List<SongDto>>
+    public async Task<List<SongDto>> Handle(GetSongsByArtist request, CancellationToken cancellationToken)
     {
-        private readonly ISongRepository _songRepository;
+        var songs = await _songRepository.GetSongsByArtist(request.ArtistId, cancellationToken);
 
-        public GetSongsByArtistHandler(ISongRepository songRepository)
+        var response = songs.Select(s => new SongDto
         {
-            _songRepository = songRepository;
-        }
+            Id = s.Id,
+            Title = s.Title,
+            Duration = s.Duration,
+            ReleaseDate = s.ReleaseDate
+        }).ToList();
 
-        public async Task<List<SongDto>> Handle(GetSongsByArtist request, CancellationToken cancellationToken)
-        {
-            var songs = await _songRepository.GetSongsByArtist(request.ArtistId, cancellationToken);
-
-            var response = songs.Select(s => new SongDto
-            {
-                Id = s.Id,
-                Title = s.Title,
-                Duration = s.Duration,
-                ReleaseDate = s.ReleaseDate
-            }).ToList();
-
-            return response;
-        }
+        return response;
     }
 }

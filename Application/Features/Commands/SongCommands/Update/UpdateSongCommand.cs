@@ -3,40 +3,38 @@ using Application.Dto;
 using Domain.Models;
 using Application.Interfaces.IRepository;
 
-namespace Application.Features.Commands.SongCommands.Update
+namespace Application.Features.Commands.SongCommands.Update;
+
+public class UpdateSongCommand : IRequest
 {
-    public class UpdateSongCommand : IRequest
+    public SongDto UpdateSong { get; set; }
+}
+
+public class UpdateSongCommandHandler : IRequestHandler<UpdateSongCommand>
+{
+    private readonly ISongRepository _songRepository;
+
+    public UpdateSongCommandHandler(ISongRepository songRepository)
     {
-        public int Id { get; set; }
-        public SongDto UpdateSong { get; set; }
+        _songRepository = songRepository;
     }
 
-    public class UpdateSongCommandHandler : IRequestHandler<UpdateSongCommand>
+    public async Task Handle(UpdateSongCommand request, CancellationToken cancellationToken)
     {
-        private readonly ISongRepository _songRepository;
+        var song = await _songRepository.GetSong(request.UpdateSong.Id, cancellationToken);
 
-        public UpdateSongCommandHandler(ISongRepository songRepository)
+        if (song == null)
         {
-            _songRepository = songRepository;
+            throw new ArgumentNullException(nameof(song));
         }
 
-        public async Task Handle(UpdateSongCommand request, CancellationToken cancellationToken)
-        {
-            var song = await _songRepository.GetSong(request.Id, cancellationToken);
+        if (request.UpdateSong!.Title is not null)
+            song.Title = request.UpdateSong!.Title;
+        song.Duration = request.UpdateSong!.Duration;
+        song.ReleaseDate = request.UpdateSong!.ReleaseDate;
 
-            if (song == null)
-            {
-                throw new ArgumentNullException(nameof(song));
-            }
-
-            if (request.UpdateSong!.Title is not null)
-                song.Title = request.UpdateSong!.Title;
-            song.Duration = request.UpdateSong!.Duration;
-            song.ReleaseDate = request.UpdateSong!.ReleaseDate;
-
-            _songRepository.UpdateSong(song);
-            await _songRepository.Save(cancellationToken);
-           
-        }
+        _songRepository.UpdateSong(song);
+        await _songRepository.Save(cancellationToken);
+       
     }
 }

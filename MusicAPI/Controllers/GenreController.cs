@@ -8,139 +8,135 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MusicAPI.Controllers
+namespace MusicAPI.Controllers;
+
+[ApiController]
+[Route("api/genres")]
+[Authorize]
+public class GenreController : ControllerBase
 {
-    [ApiController]
-    [Route("api/genres")]
-    [Authorize]
-    public class GenreController : ControllerBase
+    private readonly IMediator _mediator;
+
+    public GenreController(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public GenreController(IMediator mediator)
+    [HttpGet]
+    [Authorize(Policy = "PermissionRead")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<Genre>))]
+    [ProducesResponseType(400)]
+    public async Task<IActionResult> GetGenres()
+    {
+        var request = new GetAllGenres { };
+
+        var response = await _mediator.Send(request);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        return Ok(response);
+    }
+
+    [Authorize(Policy = "PermissionRead")]
+    [HttpGet("{genreId}")]
+    [ProducesResponseType(200, Type = typeof(Genre))]
+    [ProducesResponseType(400)]
+    public async Task<IActionResult> GetGenreById(int genreId)
+    {
+        var request = new GetGenreById
         {
-            _mediator = mediator;
-        }
+            Id = genreId
+        };
 
-        [HttpGet]
-        [Authorize(Policy = "PermissionRead")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Genre>))]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> GetGenres()
+        var response = await _mediator.Send(request);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        return Ok(response);
+    }
+
+    [Authorize(Policy = "PermissionRead")]
+    [HttpGet("{artistId}/artist")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<Genre>))]
+    [ProducesResponseType(400)]
+    public async Task<IActionResult> GetGenresByArtistId(int artistId)
+    {
+        var request = new GetGenresByArtistQuery
         {
-            var request = new GetAllGenres { };
+            artistId = artistId
+        };
 
-            var response = await _mediator.Send(request);
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            return Ok(response);
-        }
+        var response = await _mediator.Send(request);
 
-        [Authorize(Policy = "PermissionRead")]
-        [HttpGet("{genreId}")]
-        [ProducesResponseType(200, Type = typeof(Genre))]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> GetGenreById(int genreId)
+        return Ok(response);
+    }
+
+    [HttpPost]
+    [Authorize(Policy = "PermissionCreate")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    public async Task<IActionResult> CreateGenre([FromQuery] int artistId, [FromBody] GenreDto genreCreate)
+    {
+        if (genreCreate == null)
+            return BadRequest(ModelState);
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var request = new CreateGenreCommand
         {
-            var request = new GetGenreById
-            {
-                Id = genreId
-            };
+            artistId = artistId,
+            createGenre = genreCreate
+        };
 
-            var response = await _mediator.Send(request);
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            return Ok(response);
-        }
+        await _mediator.Send(request);
 
-        [Authorize(Policy = "PermissionRead")]
-        [HttpGet("{artistId}/artist")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Genre>))]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> GetGenresByArtistId(int artistId)
+        return NoContent();
+    }
+
+    [HttpPut("{genreId}")]
+    [Authorize(Policy = "PermissionUpdate")]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> UpdateGenre(
+        [FromQuery] int artistId,
+        [FromBody] GenreDto updatedGenre)
+    {
+        if (updatedGenre == null)
+            return BadRequest(ModelState);
+
+
+        if (!ModelState.IsValid)
+            return BadRequest();
+
+        var request = new UpdateGenreCommand
         {
-            var request = new GetGenresByArtistQuery
-            {
-                artistId = artistId
-            };
+            ArtistId = artistId,
+            Genre = updatedGenre
+        };
 
-            var response = await _mediator.Send(request);
+        await _mediator.Send(request);
 
-            return Ok(response);
-        }
+        return NoContent();
+    }
 
-        [HttpPost]
-        [Authorize(Policy = "PermissionCreate")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateGenre([FromQuery] int artistId, [FromBody] GenreDto genreCreate)
+    [HttpDelete("{genreId}")]
+    [Authorize(Policy = "PermissionDelete")]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> DeleteGenre(int genreId)
+    {
+
+        var request = new DeleteGenreCommand
         {
-            if (genreCreate == null)
-                return BadRequest(ModelState);
+            GenreId = genreId
+        };
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-            var request = new CreateGenreCommand
-            {
-                artistId = artistId,
-                createGenre = genreCreate
-            };
+        await _mediator.Send(request);
 
-            await _mediator.Send(request);
-
-            return NoContent();
-        }
-
-        [HttpPut("{genreId}")]
-        [Authorize(Policy = "PermissionUpdate")]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateGenre(int genreId,
-            [FromQuery] int artistId,
-            [FromBody] GenreDto updatedGenre)
-        {
-            if (updatedGenre == null)
-                return BadRequest(ModelState);
-
-            if (genreId != updatedGenre.Id)
-                return BadRequest(ModelState);
-
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            var request = new UpdateGenreCommand
-            {
-                ArtistId = artistId,
-                GenreId = genreId,
-                Genre = updatedGenre
-            };
-
-            await _mediator.Send(request);
-
-            return NoContent();
-        }
-
-        [HttpDelete("{genreId}")]
-        [Authorize(Policy = "PermissionDelete")]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> DeleteGenre(int genreId)
-        {
-
-            var request = new DeleteGenreCommand
-            {
-                GenreId = genreId
-            };
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            await _mediator.Send(request);
-
-            return NoContent();
-        }
+        return NoContent();
     }
 }

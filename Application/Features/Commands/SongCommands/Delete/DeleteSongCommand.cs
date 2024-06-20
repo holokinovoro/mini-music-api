@@ -1,34 +1,28 @@
 ﻿using Application.Interfaces.IRepository;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Application.Features.Commands.SongCommands.Delete
+namespace Application.Features.Commands.SongCommands.Delete;
+
+public class DeleteSongCommand : IRequest
 {
-    public class DeleteSongCommand : IRequest
+    public int Id { get; set; }
+}
+
+public class DeleteSongCommandHandler : IRequestHandler<DeleteSongCommand>
+{
+    private readonly ISongRepository _songRepository;
+
+    public DeleteSongCommandHandler(ISongRepository songRepository)
     {
-        public int Id { get; set; }
+        _songRepository = songRepository;
     }
 
-    public class DeleteSongCommandHandler : IRequestHandler<DeleteSongCommand>
+    public async Task Handle(DeleteSongCommand request, CancellationToken cancellationToken)
     {
-        private readonly ISongRepository _songRepository;
+        var song = await _songRepository.GetSong(request.Id, cancellationToken);
 
-        public DeleteSongCommandHandler(ISongRepository songRepository)
-        {
-            _songRepository = songRepository;
-        }
-
-        public async Task Handle(DeleteSongCommand request, CancellationToken cancellationToken)
-        {
-            var song = await _songRepository.GetSong(request.Id, cancellationToken);
-
-            if (song is not null)
-                _songRepository.DeleteSong(song);
-            await _songRepository.Save(cancellationToken);
-        }
+        if (song is not null)
+            _songRepository.DeleteSong(song);
+        await _songRepository.Save(cancellationToken);
     }
 }
