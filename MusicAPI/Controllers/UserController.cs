@@ -27,6 +27,7 @@ namespace MusicAPI.Controllers
         {
             await userService.Register(request.UserName, request.Email, request.Password);
 
+
             return Results.Ok();
         }
 
@@ -39,6 +40,9 @@ namespace MusicAPI.Controllers
             var token = await userService.Login(request.Email, request.Password);
 
             context.Response.Cookies.Append("pookie-cookies",token);
+
+            Console.WriteLine("Элиза котек");
+
 
             return Results.Ok();
         }

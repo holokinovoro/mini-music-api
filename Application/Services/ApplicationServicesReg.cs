@@ -22,6 +22,8 @@ namespace Application.Services
                    Assembly.GetExecutingAssembly()));
             services.AddValidatorsFromAssembly(typeof(ValidationBehavior<,>).Assembly);
 
+            services.AddMemoryCache();
+
             services.AddScoped<UserService>();
             services.AddTransient(
                 typeof(IPipelineBehavior<,>),
