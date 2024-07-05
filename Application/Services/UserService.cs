@@ -52,7 +52,7 @@ namespace Application.Services
                 {
                     var cacheOptions = new MemoryCacheEntryOptions()
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1),
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
                         Priority = 0,
                     };
 

@@ -19,6 +19,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(configuration).CreateLogger();
+
 // Add services to the container.
 builder.Services.AddControllers();
 
@@ -29,6 +32,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors(opts => opts.AddDefaultPolicy(opts => opts.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader()));
 
 builder.Services.AddSwaggerGen();
+builder.Services.AddSerilog();
 
 //Application and Infrastructure services registration
 
@@ -48,6 +52,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
