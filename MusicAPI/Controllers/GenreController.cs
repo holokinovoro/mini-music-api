@@ -15,10 +15,14 @@ namespace MusicAPI.Controllers;
 [Authorize]
 public class GenreController : ControllerBase
 {
+    private readonly ILogger<GenreController> _logger;
     private readonly IMediator _mediator;
 
-    public GenreController(IMediator mediator)
+    public GenreController(
+        ILogger<GenreController> logger,
+        IMediator mediator)
     {
+        _logger = logger;
         _mediator = mediator;
     }
 
@@ -32,7 +36,12 @@ public class GenreController : ControllerBase
 
         var response = await _mediator.Send(request);
         if (!ModelState.IsValid)
+        {
+            _logger.LogError("Failed Get sessiong for genres");
             return BadRequest(ModelState);
+        }
+
+        _logger.LogInformation("Get session for genres");
         return Ok(response);
     }
 
@@ -49,7 +58,12 @@ public class GenreController : ControllerBase
 
         var response = await _mediator.Send(request);
         if (!ModelState.IsValid)
+        {
+            _logger.LogError("Failed Get sessiong for genre: {Id}", request.Id);
             return BadRequest(ModelState);
+        }
+
+        _logger.LogInformation("Get session for genre: {Id}", request.Id);
         return Ok(response);
     }
 
@@ -65,7 +79,13 @@ public class GenreController : ControllerBase
         };
 
         var response = await _mediator.Send(request);
+        if (!ModelState.IsValid)
+        {
+            _logger.LogError("Failed Get sessiong for genres");
+            return BadRequest(ModelState);
+        }
 
+        _logger.LogInformation("Get session for genres");
         return Ok(response);
     }
 
@@ -79,7 +99,10 @@ public class GenreController : ControllerBase
             return BadRequest(ModelState);
 
         if (!ModelState.IsValid)
+        {
+            _logger.LogError("Failed to Create sessiong for genre");
             return BadRequest(ModelState);
+        }
 
         var request = new CreateGenreCommand
         {
@@ -89,6 +112,7 @@ public class GenreController : ControllerBase
 
         await _mediator.Send(request);
 
+        _logger.LogInformation("Create session for genres");
         return NoContent();
     }
 
@@ -105,8 +129,6 @@ public class GenreController : ControllerBase
             return BadRequest(ModelState);
 
 
-        if (!ModelState.IsValid)
-            return BadRequest();
 
         var request = new UpdateGenreCommand
         {
@@ -116,6 +138,13 @@ public class GenreController : ControllerBase
 
         await _mediator.Send(request);
 
+        if (!ModelState.IsValid)
+        {
+            _logger.LogError("Failed to Update sessiong for genre: {Id}", updatedGenre.Id);
+            return BadRequest(ModelState);
+        }
+
+        _logger.LogInformation("Update sessiong for genre: {Id}", updatedGenre.Id);
         return NoContent();
     }
 
@@ -133,9 +162,14 @@ public class GenreController : ControllerBase
         };
 
         if (!ModelState.IsValid)
+        {
+            _logger.LogError("Failed to Delete sessiong for genre: {genreId}", genreId);
             return BadRequest(ModelState);
+        }
 
         await _mediator.Send(request);
+
+        _logger.LogInformation("Delete sessiong for genre: {genreId}", genreId);
 
         return NoContent();
     }
