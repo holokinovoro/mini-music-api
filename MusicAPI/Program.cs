@@ -21,6 +21,7 @@ var configuration = builder.Configuration;
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(configuration).CreateLogger();
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -53,11 +54,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
-
-
 app.UseCors();
 
 app.UseCookiePolicy(new CookiePolicyOptions

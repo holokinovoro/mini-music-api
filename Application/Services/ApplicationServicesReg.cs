@@ -21,8 +21,9 @@ namespace Application.Services
             services.AddMediatR(config => config.RegisterServicesFromAssemblies(
                    Assembly.GetExecutingAssembly()));
             services.AddValidatorsFromAssembly(typeof(ValidationBehavior<,>).Assembly);
-
             services.AddMemoryCache();
+            services.AddLogging();
+
 
             services.AddScoped<UserService>();
             services.AddTransient(
