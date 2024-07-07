@@ -16,10 +16,14 @@ namespace MusicAPI.Controllers
     [Authorize]
     public class ArtistController : ControllerBase
     {
+        private readonly ILogger<ArtistController> _logger;
         private readonly IMediator _mediator;
 
-        public ArtistController(IMediator mediator)
+        public ArtistController(
+            ILogger<ArtistController> logger,
+            IMediator mediator)
         {
+            _logger = logger;
             _mediator = mediator;
         }
 
@@ -36,9 +40,13 @@ namespace MusicAPI.Controllers
 
             var response = await _mediator.Send(request);
 
+            if (response == null)
+                _logger.LogError("Failed get session for artist");
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            _logger.LogInformation("Get session for artist: {Id}", request.ArtistId);
             return Ok(response);
         }
 
@@ -51,6 +59,12 @@ namespace MusicAPI.Controllers
             var request = new GetAllArtistsQuery();
             var response = await _mediator.Send(request);
 
+            if(response == null)
+            {
+                _logger.LogError("Failed to get session for artists");
+            }
+
+            _logger.LogInformation("Get session for artists");
             return Ok(response);
         }
 
@@ -67,6 +81,10 @@ namespace MusicAPI.Controllers
 
             var response = await _mediator.Send(request);
 
+            if (response == null)
+                _logger.LogError("Failed Get session for artist");
+
+            _logger.LogInformation("Get session for artist");
             return Ok(response);
         }
 
@@ -82,9 +100,13 @@ namespace MusicAPI.Controllers
             };
 
             var response = await _mediator.Send(request);
+            if (response == null)
+                _logger.LogError("Failed Get session for artist");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            _logger.LogInformation("Get session for artist");
             return Ok(response);
         }
 
@@ -106,8 +128,12 @@ namespace MusicAPI.Controllers
             await _mediator.Send(request);
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                _logger.LogError("Failed Create session for artist: {Id}", request.CreateArtist.Id);
+                return BadRequest();
+            }
 
+            _logger.LogInformation("Create session for artist: {Id}", request.CreateArtist.Id);
             return NoContent();
         }
 
@@ -125,7 +151,10 @@ namespace MusicAPI.Controllers
 
 
             if (!ModelState.IsValid)
+            {
+                _logger.LogError("Failed Update session for artist");
                 return BadRequest();
+            }
 
             var request = new UpdateArtistCommand
             {
@@ -135,6 +164,7 @@ namespace MusicAPI.Controllers
 
             await _mediator.Send(request);
 
+            _logger.LogInformation("Update session for artist: {Id}", request.ArtistUpdate.Id);
             return NoContent();
         }
 
@@ -151,10 +181,14 @@ namespace MusicAPI.Controllers
             };
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                _logger.LogError("Failed Delete session for artist: {Id}", request.Id);
+                return BadRequest();
+            }
 
             await _mediator.Send(request);
 
+            _logger.LogInformation("Delete session for artist: {Id}", request.Id);
             return NoContent();
         }
     }
