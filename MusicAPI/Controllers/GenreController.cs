@@ -37,7 +37,7 @@ public class GenreController : ControllerBase
         var response = await _mediator.Send(request);
         if (!ModelState.IsValid)
         {
-            _logger.LogError("Failed Get sessiong for genres");
+            _logger.LogError("Failed Get session for genres");
             return BadRequest(ModelState);
         }
 

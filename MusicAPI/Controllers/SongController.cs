@@ -9,6 +9,7 @@ using Application.Features.Commands.SongCommands.Update;
 using Application.Features.Commands.SongCommands.Delete;
 using Microsoft.AspNetCore.Authorization;
 using Infrastructure.Authentication;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace MusicAPI.Controllers
 {
@@ -17,13 +18,16 @@ namespace MusicAPI.Controllers
     [Authorize]
     public class SongController : ControllerBase
     {
+        private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
         public SongController(
+            ILogger logger,
             IMapper mapper,
             IMediator mediator)
         {
+            _logger = logger;
             _mapper = mapper;
             _mediator = mediator;
         }
@@ -37,7 +41,11 @@ namespace MusicAPI.Controllers
             var request = new GetAllSongsQuery();
             var response = await _mediator.Send(request);
             if (!ModelState.IsValid)
+            {
+                _logger.LogError("Failed Get Session for song");
                 return BadRequest(ModelState);
+            }
+            _logger.LogInformation("Get session for song");
             return Ok(response);
         }
 
@@ -55,7 +63,11 @@ namespace MusicAPI.Controllers
             var response = await _mediator.Send(request);
 
             if (!ModelState.IsValid)
+            {
+                _logger.LogError("Failed Get Session for song {Id}", songId);
                 return BadRequest(ModelState);
+            }
+            _logger.LogInformation("Get session for song {Id}", songId);
             return Ok(response);
         }
 
@@ -73,7 +85,11 @@ namespace MusicAPI.Controllers
             var response = await _mediator.Send(request);
 
             if (!ModelState.IsValid)
+            {
+                _logger.LogError("Failed Get Session for song by artist {Id}", artistId);
                 return BadRequest(ModelState);
+            }
+            _logger.LogInformation("Get Session for song by artist {Id}", artistId);
             return Ok(response);
         }
 
@@ -91,7 +107,12 @@ namespace MusicAPI.Controllers
             var response = await _mediator.Send(request);
 
             if (!ModelState.IsValid)
+            {
+                _logger.LogError("Failed Get Session for song by genre {Id}", genreId);
                 return BadRequest(ModelState);
+            }
+            _logger.LogInformation("Get Session for song by genre {Id}", genreId);
+
             return Ok(response);
         }
 
@@ -106,8 +127,12 @@ namespace MusicAPI.Controllers
             var response = await _mediator.Send(command);
 
             if (!ModelState.IsValid)
+            {
+                _logger.LogError("Failed Create Session for song {Id}", command.createSong.Id);
                 return BadRequest(ModelState);
+            }
 
+            _logger.LogInformation("Create Session for song {Id}", command.createSong.Id);
             return NoContent();
         }
 
@@ -129,8 +154,11 @@ namespace MusicAPI.Controllers
             await _mediator.Send(request);
 
             if (!ModelState.IsValid)
+            {
+                _logger.LogError("Failed Update Session for song {Id}", updatedSong.Id);
                 return BadRequest(ModelState);
-
+            }
+            _logger.LogInformation("Update Session for song {Id}", updatedSong.Id);
             return NoContent();
         }
 
@@ -150,8 +178,11 @@ namespace MusicAPI.Controllers
             await _mediator.Send(request);
 
             if (!ModelState.IsValid)
+            {
+                _logger.LogError("Failed Delete Session for song {Id}", songId);
                 return BadRequest(ModelState);
-
+            }
+            _logger.LogInformation("Delete Session for song {Id}", songId);
             return NoContent();
         }
     }
