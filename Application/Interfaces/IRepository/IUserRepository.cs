@@ -12,5 +12,13 @@ namespace Application.Interfaces.IRepository
 
         public Task<HashSet<Permission>> GetUserPermissions(Guid userId);
 
+        public Task<ICollection<User>> GetUsers(CancellationToken cancellationToken = default);
+
+        public Task<User> GetUserById(Guid userId, CancellationToken cancellationToken = default);
+
+        public Task Update(User user, CancellationToken cancellationToken = default);
+
+        public Task Delete(Guid userId, CancellationToken cancellationToken = default);
+
     }
 }

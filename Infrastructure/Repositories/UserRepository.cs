@@ -49,6 +49,7 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+
         public async Task<User> GetByEmail(string email)
         {
             var userEntity = await _context.Users
@@ -59,6 +60,7 @@ namespace Infrastructure.Repositories
 
             return _mapper.Map<User>(userEntity);
         }
+
 
         public async Task<HashSet<Permission>> GetUserPermissions(Guid userId)
         {
@@ -75,6 +77,35 @@ namespace Infrastructure.Repositories
                 .SelectMany(r => r.Permissions)
                 .Select(p => (Permission)p.Id)
                 .ToHashSet();
+        }
+
+        public async Task<ICollection<User>> GetUsers(CancellationToken cancellationToken = default)
+        {
+            var usersEntity = await _context.Users
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+
+            return _mapper.Map<ICollection<User>>(usersEntity);
+        }
+        public async Task<User> GetUserById(Guid userId, CancellationToken cancellationToken = default)
+        {
+            var userEntity = await _context.Users
+                .AsNoTracking()
+                .Where(u => u.Id == userId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return _mapper.Map<User>(userEntity);
+        }
+
+        public async Task Update(User user, CancellationToken cancellationToken = default)
+        {
+            _context.Update(user);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        public async Task Delete(Guid userId, CancellationToken cancellationToken = default)
+        {
+            _context.Remove(userId);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

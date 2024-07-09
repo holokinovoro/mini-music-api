@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Auth;
+﻿using Application.Dto;
+using Application.Interfaces.Auth;
 using Application.Interfaces.IRepository;
 using Domain.Interfaces;
 using Domain.Models;
@@ -72,5 +73,6 @@ namespace Application.Services
 
             return token;
         }
+        
     }
 }
