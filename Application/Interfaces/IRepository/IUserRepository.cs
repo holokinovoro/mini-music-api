@@ -16,8 +16,6 @@ namespace Application.Interfaces.IRepository
 
         public Task<User> GetUserById(Guid userId, CancellationToken cancellationToken = default);
 
-        public Task Update(User user, CancellationToken cancellationToken = default);
-
         public Task Delete(Guid userId, CancellationToken cancellationToken = default);
 
     }

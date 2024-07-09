@@ -97,11 +97,6 @@ namespace Infrastructure.Repositories
             return _mapper.Map<User>(userEntity);
         }
 
-        public async Task Update(User user, CancellationToken cancellationToken = default)
-        {
-            _context.Update(user);
-            await _context.SaveChangesAsync(cancellationToken);
-        }
         public async Task Delete(Guid userId, CancellationToken cancellationToken = default)
         {
             _context.Remove(userId);
