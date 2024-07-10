@@ -2,6 +2,7 @@
 using Application.Features.Commands.SongCommands.Update;
 using Application.Features.Queries.Song.GetSong;
 using Application.Interfaces.Auth;
+using Application.Mappings;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +24,7 @@ namespace Application.Services
             services.AddValidatorsFromAssembly(typeof(ValidationBehavior<,>).Assembly);
             services.AddMemoryCache();
             services.AddLogging();
-
+            services.AddAutoMapper(typeof(DtoMap));
 
             services.AddScoped<UserService>();
             services.AddTransient(

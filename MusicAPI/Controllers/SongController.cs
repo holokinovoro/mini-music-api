@@ -18,17 +18,14 @@ namespace MusicAPI.Controllers
     [Authorize]
     public class SongController : ControllerBase
     {
-        private readonly ILogger _logger;
-        private readonly IMapper _mapper;
+        private readonly ILogger<SongController> _logger;
         private readonly IMediator _mediator;
 
         public SongController(
-            ILogger logger,
-            IMapper mapper,
+            ILogger<SongController> logger,
             IMediator mediator)
         {
             _logger = logger;
-            _mapper = mapper;
             _mediator = mediator;
         }
 

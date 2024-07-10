@@ -5,27 +5,34 @@ using Domain.Models;
 using Application.Services;
 using MusicAPI.Contracts.Users;
 using Microsoft.AspNetCore.Authorization;
+using MediatR;
+using Application.Features.Queries.User;
+using Application.Features.Commands.UserCommands.Delete;
 
 namespace MusicAPI.Controllers
 {
     [ApiController]
     [Route("api/users")]
-    [AllowAnonymous]
+    [Authorize]
     public class UserController : ControllerBase
     {
-        private readonly ILogger _logger;
+        private readonly IMediator _mediator;
+        private readonly ILogger<UserController> _logger;
         private readonly UserService _userService;
 
         public UserController(
-            ILogger logger,
+            IMediator mediator,
+            ILogger<UserController> logger,
             UserService userService)
         {
+            _mediator = mediator;
             _logger = logger;
             _userService = userService;
         }
 
 
         [HttpPost("/register")]
+        [AllowAnonymous]
         public async Task<IResult> Register(
             [FromQuery]RegisterUserRequest request)
         {
@@ -46,6 +53,7 @@ namespace MusicAPI.Controllers
         }
 
         [HttpPost("/login")]
+        [AllowAnonymous]
         public async Task<IResult> Login(
             [FromQuery]LoginUserRequest request)
         {
@@ -68,5 +76,68 @@ namespace MusicAPI.Controllers
             _logger.LogInformation("Login session for user");
             return Results.Ok();
         }
+
+        [HttpGet("/users")]
+        [Authorize(Policy = "PermissionCreate")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var request = new GetUsersQuery();
+            var response = await _mediator.Send(request);
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Failed get session for user");
+                return BadRequest();
+            }
+
+            _logger.LogInformation("Get session for user");
+            return Ok(response);
+        }
+
+        [HttpGet("/users/{Id}")]
+        [Authorize(Policy = "PermissionCreate")]
+        public async Task<IActionResult> GetUserById(Guid Id)
+        {
+            var request = new GetUserById
+            {
+                Id = Id
+            };
+
+            var response = await _mediator.Send(request);
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Failed get session for user {Id}", request.Id);
+                return BadRequest();
+            }
+
+            _logger.LogInformation("Get session for user {Id}", request.Id);
+            return Ok(response);
+        }
+
+        [HttpDelete("{Id}")]
+        [Authorize(Policy = "PermissionDelete")]
+        public async Task<IActionResult> DeleteUser(Guid Id)
+        {
+            var request = new DeleteUserCommand
+            {
+                userId = Id
+            };
+
+            var response = await _mediator.Send(request);
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Failed delete session for user {Id}", request.userId);
+                return BadRequest();
+            }
+
+            _logger.LogInformation("Delete session for user {Id}", request.userId);
+
+            return Ok(response);
+        }
+
+
+
     }
 }

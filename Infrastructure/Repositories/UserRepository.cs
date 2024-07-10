@@ -99,7 +99,11 @@ namespace Infrastructure.Repositories
 
         public async Task Delete(Guid userId, CancellationToken cancellationToken = default)
         {
-            _context.Remove(userId);
+            var userEntity = await _context.Users
+                .AsNoTracking()
+                .Where(u => u.Id == userId)
+                .FirstOrDefaultAsync(cancellationToken);
+            _context.Remove(userEntity);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

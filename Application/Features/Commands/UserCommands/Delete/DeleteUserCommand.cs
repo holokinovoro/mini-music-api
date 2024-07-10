@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Commands.UserCommands.Delete;
 
-public class DeleteUserCommand : IRequest
+public class DeleteUserCommand : IRequest<Guid>
 {
     public Guid userId { get; set; }
 }
 
-public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
+public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Guid>
 {
     private readonly ILogger<DeleteUserCommandHandler> _logger;
     private readonly IUserRepository _userRepository;
@@ -28,7 +28,7 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
     }
 
 
-    public async Task Handle(DeleteUserCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -38,7 +38,7 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
                 await _userRepository.Delete(user.Id, cancellationToken);
 
             _logger.LogInformation("user deleted {Id}", user.Id);
-
+            return user.Id;
         }
         catch(Exception ex)
         {

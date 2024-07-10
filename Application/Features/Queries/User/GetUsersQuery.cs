@@ -11,12 +11,12 @@ public class GetUsersQuery : IRequest<List<UserDto>>{}
 
 public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, List<UserDto>>
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<GetUsersQueryHandler> _logger;
     private readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
 
     public GetUsersQueryHandler(
-        ILogger logger,
+        ILogger<GetUsersQueryHandler> logger,
         IMapper mapper,
         IUserRepository userRepository)
     {

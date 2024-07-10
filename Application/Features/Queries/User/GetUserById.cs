@@ -15,12 +15,12 @@ public class GetUserById : IRequest<UserDto>
 public class GetUserByIdHandler : IRequestHandler<GetUserById, UserDto>
 {
     private readonly IMapper _mapper;
-    private readonly ILogger _logger;
+    private readonly ILogger<GetUserByIdHandler> _logger;
     private readonly IUserRepository _userRepository;
 
     public GetUserByIdHandler(
         IMapper mapper,
-        ILogger logger,
+        ILogger<GetUserByIdHandler> logger,
         IUserRepository userRepository
         )
     {
@@ -37,6 +37,7 @@ public class GetUserByIdHandler : IRequestHandler<GetUserById, UserDto>
             var user = await _userRepository.GetUserById(request.Id, cancellationToken);
             if (user == null)
                 _logger.LogError("user not found");
+
 
             return _mapper.Map<UserDto>(user);
         }
