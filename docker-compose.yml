@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  musicapi:
+    image: ${DOCKER_REGISTRY-}musicapi
+    build:
+      context: .
+      dockerfile: MusicAPI/Dockerfile
+    ports:
+        - "5000:5000"
+        - "5001:5001"  
