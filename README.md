@@ -20,4 +20,6 @@
     <li>Serilog
     <li>Automapper
     <li>Fluent Validation
+    <li>Docker
+    </li>
 </ul>
