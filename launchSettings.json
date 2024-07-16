@@ -3,6 +3,17 @@
     "Docker Compose": {
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "http://0.0.0.0:5000/swagger/index.html",
+      "applicationUrl": "http://0.0.0.0:5000",
+      "publishAllPorts": true,
+      "useSSL": false,
+      "DockerfileRunArguments": "--network=marcom-core -p 5000 -itd --name=marcom-playground-server-debug",
+      "environmentVariables": {
+        "ASPNETCORE_URLS": "http://+:5000",
+        "ASPNETCORE_ENVIRONMENT": "development"
+      },
       "serviceActions": {
         "musicapi": "StartDebugging"
       }

@@ -1,10 +1,13 @@
 ﻿using Application.Services;
+using Cqrs.Hosts;
 using Domain.Enums;
 using Domain.Interfaces;
 using Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -68,5 +71,7 @@ public static class ApiExtentions
             .RequireAuthorization(pb =>
                 pb.AddRequirements(new PermissionRequirement(permissions)));
     }
+
+    
 
 }

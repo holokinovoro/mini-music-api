@@ -14,6 +14,8 @@ using Infrastructure;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Authorization;
 using AuthorizationOptions = Infrastructure.AuthorizationOptions;
+using System.Net;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,5 +73,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+using(var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+{
+    var context = serviceScope.ServiceProvider.GetService<DataContext>();
+    context.Database.Migrate();
+}
 
 app.Run();

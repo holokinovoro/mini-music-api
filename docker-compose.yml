@@ -9,3 +9,29 @@ services:
     ports:
         - "5000:5000"
         - "5001:5001"  
+    networks:
+        - music-network
+    depends_on:
+        db:
+            condition: service_started
+            restart: true
+    
+
+  db:
+    image: "mcr.microsoft.com/mssql/server"
+    container_name: sql_server19
+
+    environment:
+      SA_PASSWORD: "im@NIman"
+      ACCEPT_EULA: "Y"
+    ports:
+        - "1433:1433"
+    networks:
+        - music-network
+  
+networks:
+  music-network:
+
+
+
+

@@ -2,6 +2,9 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
+
+ENV ASPNETCORE_URLS=http://+:5000
+
 EXPOSE 5000	
 EXPOSE 5001
 
@@ -13,6 +16,9 @@ COPY ["Application/Application.csproj", "Application/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 RUN dotnet restore "MusicAPI/MusicAPI.csproj"
 COPY . .
+RUN dotnet tool install --global dotnet-ef --version 7.0.20
+
+
 WORKDIR "/src/MusicAPI"
 RUN dotnet build "MusicAPI.csproj" -c Release -o /app/build
 
